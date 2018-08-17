@@ -1,0 +1,59 @@
+apply plugin: 'java-library'
+apply plugin: 'war'
+apply plugin: 'eclipse-wtp'
+
+repositories {
+    mavenCentral()
+    jcenter()
+}
+
+eclipse {
+	classpath {
+	    downloadSources = true
+	    downloadJavadoc = false
+	}
+}
+
+dependencies {
+    compile 'dom4j:dom4j:1.6.1'
+    compile 'com.google.zxing:javase:3.3.0'
+    compile 'com.google.zxing:core:3.3.0'
+    compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.9.5'
+    compile 'org.aspectj:aspectjrt:1.6.2'
+    compile 'org.aspectj:aspectjweaver:1.6.2'
+    
+    compile 'org.springframework:spring-core:5.0.6.RELEASE'
+    compile 'org.springframework:spring-jdbc:5.0.6.RELEASE'
+    compile 'org.springframework:spring-aop:5.0.6.RELEASE'
+    compile 'org.springframework:spring-beans:5.0.6.RELEASE'
+    compile 'org.springframework:spring-context:5.0.6.RELEASE'
+    compile 'org.springframework:spring-context-support:5.0.6.RELEASE'
+    compile 'org.springframework:spring-orm:5.0.6.RELEASE'
+    compile 'org.springframework:spring-tx:5.0.6.RELEASE'
+    compile 'org.springframework:spring-web:5.0.6.RELEASE'
+    compile 'org.springframework:spring-webmvc:5.0.6.RELEASE'
+    
+    compile 'org.springframework.security:spring-security-core:4.2.3.RELEASE'
+    compile 'org.springframework.security:spring-security-taglibs:4.2.3.RELEASE'
+    compile 'org.springframework.security:spring-security-acl:4.2.3.RELEASE'
+    compile 'org.springframework.security:spring-security-config:4.2.3.RELEASE'
+    
+    compile 'org.freemarker:freemarker:2.3.28'
+    
+    compile 'org.hibernate.common:hibernate-commons-annotations:5.0.1.Final'
+    compile 'org.hibernate:hibernate-entitymanager:5.0.12.Final'
+    compile 'org.hibernate:hibernate-core:5.0.12.Final'
+    
+    compile 'javax.servlet:javax.servlet-api:3.1.0'
+    compile 'mysql:mysql-connector-java:5.1.25'
+    compile 'com.alibaba:druid:1.0.13'
+    compile 'commons-collections:commons-collections:3.2.1'
+    compile 'com.alibaba:fastjson:1.1.36'
+    compile 'com.squareup.okhttp:okhttp:2.5.0'
+    compile 'com.github.xsonorg:xson-core:1.0.1'
+    compile 'org.glassfish.jersey.core:jersey-client:2.23.2'
+    compile 'org.javassist:javassist:3.22.0-GA'
+    compile 'c3p0:c3p0:0.9.1.2'
+    
+    //test12454722222222222222222
+}
