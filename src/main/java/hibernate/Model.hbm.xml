@@ -3,7 +3,7 @@
 	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <hibernate-mapping default-lazy="false">
-
+	<!-- 
     <class name="hibernate.Model">
         <id type="string" column="modelID" name="modelID">
             <generator class="assigned"/>
@@ -11,4 +11,5 @@
         
         <property name="modelName"/>
     </class>
+     -->
 </hibernate-mapping>

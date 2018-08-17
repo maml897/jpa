@@ -10,8 +10,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-@Entity
-@Table(name = "t_order")
+//@Entity
+//@Table(name = "t_order")
 public class Order implements Serializable
 {
 	private static final long serialVersionUID = 3373981139157922935L;

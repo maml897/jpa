@@ -12,9 +12,9 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 
-@NamedQueries( { @NamedQuery(name = "getPerson", query = "select p from Person p where p.personID=?1"),
-		@NamedQuery(name = "getPersonList", query = "select p from Person p"), })
-@Entity
+//@NamedQueries( { @NamedQuery(name = "getPerson", query = "select p from Person p where p.personID=?1"),
+//		@NamedQuery(name = "getPersonList", query = "select p from Person p"), })
+//@Entity
 public class Person implements Serializable
 {
 	private static final long serialVersionUID = -1677511249163130654L;

@@ -11,8 +11,8 @@ import javax.persistence.Table;
  * Authority entity
  * @author lifw20081208
  */
-@Entity
-@Table(name = "t_authority")
+//@Entity
+//@Table(name = "t_authority")
 public class Authority implements Serializable
 {
 	private static final long serialVersionUID = -2551034275758153899L;

@@ -3,6 +3,8 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/orm http://java.sun.com/xml/ns/persistence/orm_1_0.xsd"
 	version="1.0">
+	
+	<!-- 
 	<entity class="model.Dog" access="FIELD">
 		<table name="t_dog" />
 		<attributes>
@@ -26,4 +28,5 @@
 			</basic>
 		</attributes>
 	</entity>
+	 -->
 </entity-mappings> 
