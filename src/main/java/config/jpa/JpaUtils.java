@@ -9,23 +9,29 @@ import org.hibernate.SQLQuery;
 
 public class JpaUtils {
 
+	private static EntityManager em;
+
 	public static Query createNativeQuery(String sqlString, Class<?> cls) {
-		EntityManagerFactory emf = Persistence.createEntityManagerFactory("myjpa");
-		EntityManager em = emf.createEntityManager();
-
+		EntityManager em = getEm();
 		Query query = em.createNativeQuery(sqlString);
-
 		SQLQuery sqlQuery = query.unwrap(SQLQuery.class);
 		WishAliasToBeanResultTransformer transformer = new WishAliasToBeanResultTransformer(cls);
 		sqlQuery.setResultTransformer(transformer);
 
 		return query;
 	}
-	
+
 	public static Query createNativeQuery(String sqlString) {
-		EntityManagerFactory emf = Persistence.createEntityManagerFactory("myjpa");
-		EntityManager em = emf.createEntityManager();
+		EntityManager em = getEm();
 		Query query = em.createNativeQuery(sqlString);
 		return query;
+	}
+
+	public static EntityManager getEm() {
+		if (em == null) {
+			EntityManagerFactory emf = Persistence.createEntityManagerFactory("myjpa");
+			em = emf.createEntityManager();
+		}
+		return em;
 	}
 }
