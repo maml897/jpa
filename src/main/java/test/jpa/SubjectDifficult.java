@@ -8,10 +8,14 @@ import javax.persistence.Query;
 
 import config.jpa.JpaUtils;
 
-public class Main {
+/**
+ * 学科难度
+ * @author maml
+ *
+ */
+public class SubjectDifficult {
 
 	public static void main(String[] args) {
-
 		test(45, 2, 20);
 	}
 
@@ -31,15 +35,15 @@ public class Main {
 		s =System.currentTimeMillis();
 		float score=(float)ns.get("Score");
 		while(score>0){
-			 Map<Float,Double> msp=subjectDifficult(nsStudentSubjects, score, 150);
+			 Map<Float,Double> msp=subjectDifficult(nsStudentSubjects, score,step, 150);//150是学科满分
 			 System.out.println(msp);
-			 score=score-20;
+			 score=score-step;
 		}
 		System.out.println(System.currentTimeMillis()-s);
 	}
 	
 	//nsStudents：统计学生
-	public static Map<Float,Double> subjectDifficult(List<Map<String,Object>> nsStudents, float scorePonit, float subjectFull)
+	public static Map<Float,Double> subjectDifficult(List<Map<String,Object>> nsStudents, float scorePonit,float step, float subjectFull)
 	{
 		Map<Float,Double> map =new HashMap<>();
 		map.put(scorePonit, 0d);
@@ -47,7 +51,7 @@ public class Main {
 		{
 			double average = nsStudents.stream().filter(x->{
 				float studentScore = (float)x.get("Score");//学生总分
-				return (studentScore<=scorePonit&&studentScore>(scorePonit-20));
+				return (studentScore<=scorePonit&&studentScore>(scorePonit-step));
 				
 			}).mapToDouble(x->(float)x.get("YsScore")).average().getAsDouble();//学生单科成绩
 			double result=(float)average/subjectFull;
