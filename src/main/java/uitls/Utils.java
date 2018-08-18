@@ -7,7 +7,7 @@ import java.util.List;
 public class Utils {
 
 	/**
-	 * 返回values 中距离oldValue 最近的值，可以上取，也可以下取
+	 * 返回values 中距离value 最近的值，可以上取，也可以下取
 	 * 
 	 * @param value：
 	 * @param values：排好序的value，从小到大
