@@ -41,7 +41,7 @@ public class QuestionDifficult {
 	public static Map<Float, Double> compute(List<Map<String, Object>> nsStudents, List<Map<String, Object>> questions,
 			float full, float step) {
 		Map<Float, Double> result = new HashMap<>();
-		Map<Float, List<Long>> map = getMapSegmentStudentID(nsStudents, full, step);// 分数--人员列表
+		Map<Float, List<Long>> map = score2students(nsStudents, full, step);// 分数--人员列表
 
 		for (Map<String, Object> question : questions) {
 			
@@ -87,7 +87,7 @@ public class QuestionDifficult {
 	}
 
 	// 待计算学生
-	private static Map<Float, List<Long>> getMapSegmentStudentID(List<Map<String, Object>> nsStudents, float full,
+	private static Map<Float, List<Long>> score2students(List<Map<String, Object>> nsStudents, float full,
 			float step) {
 		Map<Float, List<Long>> mapSegmentStudentId = initMap(full, step);
 
