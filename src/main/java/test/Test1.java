@@ -11,7 +11,6 @@ import config.jpa.JpaUtils;
 public class Test1 {
 	public static void main(String[] args) {
 		test1();
-		
 		System.out.println("======================");
 		test2();
 	}
