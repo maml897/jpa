@@ -24,23 +24,30 @@ public class SubjectScore {
 		List<Map<String,Object>> nsStudentSubjects = query2.getResultList();
 		
 		System.out.println(nsStudentSubjects.size());
+		SubjectScore.compute(nsStudentSubjects);
+		System.out.println(System.currentTimeMillis()-s);
+	}
+	
+	public static void compute(List<Map<String,Object>> nsStudentSubjects){
 		Map<Float, Long> group2 = nsStudentSubjects.stream().collect(Collectors.groupingBy(t -> (float)t.get("YsScore"), LinkedHashMap::new, Collectors.counting()));
-		
-//		System.out.println(group2);
-//		System.out.println(group2.get(1.5f));
 		
 		long lastOrder =1;
 		long lastCount = 0;
+		long lastSum = 0;
 		
+		System.out.println("ysScore==order===ount===sum");
 		for(float ysScore:group2.keySet()){
 			
-			long order = lastOrder+lastCount;
+			long order = lastOrder+lastCount;//
+			long sum = lastCount+lastSum;//
 			long count =group2.get(ysScore);
-			System.out.println(ysScore+"=="+count+"==="+order);
+			
+			System.out.println(ysScore+"=="+order+"==="+count+"==="+sum);
+			
 			lastOrder = order;
 			lastCount = count;
+			lastSum=sum;
 		}
 		
-		System.out.println(System.currentTimeMillis()-s);
 	}
 }
