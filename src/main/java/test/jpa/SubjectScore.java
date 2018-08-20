@@ -35,9 +35,10 @@ public class SubjectScore {
 		for(float ysScore:group2.keySet()){
 			
 			long order = lastOrder+lastCount;
-			System.out.println(ysScore+"=="+group2.get(ysScore)+"==="+order);
+			long count =group2.get(ysScore);
+			System.out.println(ysScore+"=="+count+"==="+order);
 			lastOrder = order;
-			lastCount = group2.get(ysScore);
+			lastCount = count;
 		}
 		
 		System.out.println(System.currentTimeMillis()-s);
