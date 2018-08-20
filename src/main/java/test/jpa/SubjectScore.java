@@ -12,6 +12,7 @@ import config.jpa.JpaUtils;
 public class SubjectScore {
 	public static void main(String[] args) {
 		test(45, 2);
+		System.exit(0);
 	}
 	
 	public static void test(long nsID, long subjectID) {
