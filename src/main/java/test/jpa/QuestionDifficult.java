@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
 import javax.persistence.Query;
 
@@ -35,10 +36,24 @@ public class QuestionDifficult {
 						+ nsID + " and SubjectID=" + subjectID,
 				HashMap.class);
 		List<Map<String, Object>> questions = query.getResultList();
-		compute(nsStudentSubjects, questions, 150, 5);
+		compute(nsStudentSubjects, questions,x->{
+			
+			Query query1 = JpaUtils.createNativeQuery(
+					"select NsrQuestionID,NsStudentID,Score from n_nsrquestionstudent nq where nq.NsrQuestionID="+x,HashMap.class);
+			List<Map<String, Object>> questionStudents = query1.getResultList();// 本道题学生的答题情况,sudentID,questionID,Score
+			return questionStudents;
+		}, 150, 5);
 	}
 
-	public static Map<Float, Double> compute(List<Map<String, Object>> nsStudents, List<Map<String, Object>> questions,
+	/**
+	 * @param nsStudents
+	 * @param questions
+	 * @param fun
+	 * @param full
+	 * @param step
+	 * @return
+	 */
+	public static Map<Float, Double> compute(List<Map<String, Object>> nsStudents, List<Map<String, Object>> questions,Function<Long,List<Map<String, Object>>> fun,
 			float full, float step) {
 		Map<Float, Double> result = new HashMap<>();
 		Map<Float, List<Long>> map = score2students(nsStudents, full, step);// 分数--人员列表
@@ -52,10 +67,7 @@ public class QuestionDifficult {
 			{
 				continue;
 			}
-			Query query = JpaUtils.createNativeQuery(
-					"select NsrQuestionID,NsStudentID,Score from n_nsrquestionstudent nq where nq.NsrQuestionID="+questionID,HashMap.class);
-			List<Map<String, Object>> questionStudents = query.getResultList();// 本道题学生的答题情况,sudentID,questionID,Score
-
+			List<Map<String, Object>> questionStudents = fun.apply(questionID);
 			Map<Long, Map<Long, Map<String, Object>>> questionStudent = LambdaUtils.groupby(questionStudents, x -> {
 				return (Long) x.get("NsrQuestionID");
 			}, x -> {

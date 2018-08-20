@@ -1,5 +1,6 @@
 package test.jpa;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,7 +29,9 @@ public class DisdrictQuestionDifficult {
 						+ nsID + " and SubjectID=" + subjectID,
 				HashMap.class);
 		List<Map<String, Object>> questions = query.getResultList();
-		QuestionDifficult.compute(nsStudentSubjects, questions, 150, 5);
+		QuestionDifficult.compute(nsStudentSubjects, questions, x->{//此处还是返回本地区的
+			return new ArrayList<>();
+		},150, 5);
 	}
 
 }
