@@ -66,5 +66,7 @@ public class QuestionDiscriminationTest {
 		
 		System.out.println("科目的区分度由小题计算而来："+total/150);
 		
+		System.out.println(System.currentTimeMillis()-s);
+		
 	}
 }
