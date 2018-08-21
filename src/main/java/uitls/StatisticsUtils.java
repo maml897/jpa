@@ -64,7 +64,9 @@ public class StatisticsUtils {
 	 * @return
 	 */
 	public static double median1(List<Float> list, boolean... orderd) {
-
+		if(list.size()==0){
+			return 0;
+		}
 		if (orderd == null || orderd.length == 0 || orderd[0]) {
 			int number = list.size();
 			float median = 0f;
@@ -77,13 +79,13 @@ public class StatisticsUtils {
 			return median;
 		}
 
-		// 无序列表快速得到中位数
+		// 无序列表快速得到中位数https://www.cnblogs.com/shizhh/p/5746151.html
 		int heapSize = list.size() / 2 + 1;
 		PriorityQueue<Float> heap = new PriorityQueue<>(heapSize);
 		for (int i = 0; i < heapSize; i++) {
 			heap.add(list.get(i));
 		}
-
+		
 		for (int i = heapSize; i < list.size(); i++) {
 			if (heap.peek() < list.get(i)) {
 				heap.poll();
@@ -110,8 +112,8 @@ public class StatisticsUtils {
 	public static void main(String[] args) {
 		List<Float> list = new ArrayList<>();
 
-		for (int i = 50000; i > 0; i--)
-			list.add(new Random().nextFloat());
+		for (int i = 0; i < 10; i++)
+			list.add((float)i);
 
 		long s = System.currentTimeMillis();
 		System.out.println(median(list, false));
