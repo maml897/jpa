@@ -20,7 +20,7 @@ public class StatisticsUtils {
 	}
 
 	/**
-	 * 
+	 * 区分度
 	 * @param list
 	 *            排好序的,按照单科分数排序，分数相同按照examCode
 	 * @param fullScore
