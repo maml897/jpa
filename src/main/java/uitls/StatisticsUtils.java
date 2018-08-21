@@ -3,8 +3,6 @@ package uitls;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.PriorityQueue;
-import java.util.Random;
-import java.util.stream.Collectors;
 
 public class StatisticsUtils {
 	/**
@@ -21,9 +19,33 @@ public class StatisticsUtils {
 		return variance > 0 ? Math.sqrt(variance) : 0;
 	}
 
-	// 区分度
-	public static double discrimination(List<Float> list, float... averages) {
-		return 0;
+	/**
+	 * 
+	 * @param list
+	 *            排好序的,按照单科分数排序，分数相同按照examCode
+	 * @param fullScore
+	 * @return
+	 */
+	public static double discrimination(List<Float> list, float fullScore) {
+		int statisticNum = list.size();
+
+		int hnum = statisticNum * 27 / 100;
+		int lnum = statisticNum - statisticNum * 73 / 100;
+
+		List<Float> hlist = list.subList(0, hnum);
+		List<Float> llist = list.subList(statisticNum - lnum, statisticNum);
+
+		double haverage = average(hlist);
+		double laverage = average(llist);
+		return (haverage - laverage) / fullScore;
+	}
+
+	public static void main(String[] args) {
+		List<Float> list = new ArrayList<>(391);
+		for (int i = 0; i < 391; i++) {
+			list.add((float) i);
+		}
+		discrimination(list, 200);
 	}
 
 	// 信度
@@ -40,31 +62,7 @@ public class StatisticsUtils {
 	 * @return
 	 */
 	public static double median(List<Float> list, boolean... orderd) {
-		if (orderd != null && orderd.length > 0 && !orderd[0]) {// averaged传false，需要排序
-			list = list.stream().sorted().collect(Collectors.toList());
-		}
-
-		int studentNumber = list.size();
-		float median = 0f;
-		int x = studentNumber / 2;
-		if (studentNumber % 2 == 0) {
-			return (list.get(x - 1) + list.get(x)) / 2;
-		} else {
-			median = list.get(x).floatValue();
-		}
-		return median;
-	}
-
-	/**
-	 * 中位数
-	 * 
-	 * @param list
-	 * @param orderd
-	 *            列表是否已经进行了排序，如果没有需要false
-	 * @return
-	 */
-	public static double median1(List<Float> list, boolean... orderd) {
-		if(list.size()==0){
+		if (list.size() == 0) {
 			return 0;
 		}
 		if (orderd == null || orderd.length == 0 || orderd[0]) {
@@ -85,7 +83,7 @@ public class StatisticsUtils {
 		for (int i = 0; i < heapSize; i++) {
 			heap.add(list.get(i));
 		}
-		
+
 		for (int i = heapSize; i < list.size(); i++) {
 			if (heap.peek() < list.get(i)) {
 				heap.poll();
@@ -109,18 +107,4 @@ public class StatisticsUtils {
 		return list.stream().mapToDouble(x -> x).average().getAsDouble();
 	}
 
-	public static void main(String[] args) {
-		List<Float> list = new ArrayList<>();
-
-		for (int i = 0; i < 10; i++)
-			list.add((float)i);
-
-		long s = System.currentTimeMillis();
-		System.out.println(median(list, false));
-		System.out.println(System.currentTimeMillis() - s);
-
-		s = System.currentTimeMillis();
-		System.out.println(median1(list, false));
-		System.out.println(System.currentTimeMillis() - s);
-	}
 }
