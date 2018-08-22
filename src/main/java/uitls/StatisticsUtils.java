@@ -68,11 +68,17 @@ public class StatisticsUtils {
 
 	/**
 	 * 信度
-	 * @param questionCount 问题数量
-	 * @param scores 学生的分数集合
-	 * @param oddScores 学生的奇数题分数集合
-	 * @param evenScores 学生的偶数题分数集合
-	 * @param variance 学生分数方差
+	 * 
+	 * @param questionCount
+	 *            问题数量
+	 * @param scores
+	 *            学生的分数集合
+	 * @param oddScores
+	 *            学生的奇数题分数集合
+	 * @param evenScores
+	 *            学生的偶数题分数集合
+	 * @param variance
+	 *            学生分数方差
 	 * @return
 	 * @throws Exception
 	 */
@@ -183,4 +189,33 @@ public class StatisticsUtils {
 		return list.stream().mapToDouble(x -> x).average().getAsDouble();
 	}
 
+	/**
+	 * 满分人数
+	 * 
+	 * @param list
+	 * @return
+	 */
+	public static double full(List<Float> list) {
+		return 0;
+	}
+
+	/**
+	 * 最高分
+	 * 
+	 * @param list
+	 * @return
+	 */
+	public static double top(List<Float> list) {
+		return 0;
+	}
+
+	/**
+	 * 最低分
+	 * 
+	 * @param list
+	 * @return
+	 */
+	public static double bottom(List<Float> list) {
+		return 0;
+	}
 }
