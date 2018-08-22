@@ -63,4 +63,27 @@ public class SubjectDifficult {
 		}
 		return map;
 	}
+	
+	public static Map<Float,Double> compute(List<Map<String,Object>> nsStudents, float scorePonit,float step, float subjectFull)
+	{
+		Map<Float,Double> map =new HashMap<>();
+		map.put(scorePonit, 0d);
+		try
+		{
+			double average = nsStudents.stream().filter(x->{
+				float studentScore = (float)x.get("Score");//学生总分
+				return (studentScore<=scorePonit&&studentScore>(scorePonit-step));
+				
+			}).mapToDouble(x->(float)x.get("YsScore")).average().getAsDouble();//学生单科成绩
+			double result=(float)average/subjectFull;
+			map.put(scorePonit, result);
+		}
+		catch (Exception e)
+		{
+			
+		}
+		return map;
+	}
+	
+	
 }
