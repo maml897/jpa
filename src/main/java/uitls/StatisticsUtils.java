@@ -195,8 +195,9 @@ public class StatisticsUtils {
 	 * @param list
 	 * @return
 	 */
-	public static double full(List<Float> list) {
-		return 0;
+	public static int full(List<Float> list,float score) {
+		int full = (int)list.stream().filter(x -> x ==score).count();
+		return full;
 	}
 
 	/**
@@ -206,7 +207,8 @@ public class StatisticsUtils {
 	 * @return
 	 */
 	public static double top(List<Float> list) {
-		return 0;
+		double result = list.stream().mapToDouble(x -> x).max().getAsDouble();
+		return result;
 	}
 
 	/**
@@ -216,6 +218,7 @@ public class StatisticsUtils {
 	 * @return
 	 */
 	public static double bottom(List<Float> list) {
-		return 0;
+		double result = list.stream().mapToDouble(x -> x).min().getAsDouble();
+		return result;
 	}
 }
