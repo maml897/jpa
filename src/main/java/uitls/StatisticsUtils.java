@@ -1,10 +1,28 @@
 package uitls;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.PriorityQueue;
 
+import common.excel.PoiExcelReader;
+
 public class StatisticsUtils {
+
+	/**
+	 * 方差
+	 * 
+	 * @param list
+	 * @param averages
+	 *            平均分，可以不传，不传的话就自动计算
+	 * @return
+	 */
+	public static double variance(List<Float> list, double... averages) {
+		double average = (averages == null || averages.length == 0) ? average(list) : averages[0];
+		double variance = list.stream().mapToDouble(x -> Math.pow(x - average, 2)).average().getAsDouble();
+		return variance;
+	}
+
 	/**
 	 * 标准差
 	 * 
@@ -13,14 +31,14 @@ public class StatisticsUtils {
 	 *            平均分，可以不传，不传的话就自动计算
 	 * @return
 	 */
-	public static double stand(List<Float> list, float... averages) {
-		double average = (averages == null || averages.length == 0) ? average(list) : averages[0];
-		double variance = list.stream().mapToDouble(x -> Math.pow(x - average, 2)).average().getAsDouble();
+	public static double stand(List<Float> list, double... averages) {
+		double variance = variance(list, averages);
 		return variance > 0 ? Math.sqrt(variance) : 0;
 	}
 
 	/**
 	 * 区分度
+	 * 
 	 * @param list
 	 *            排好序的,按照单科分数排序，分数相同按照examCode
 	 * @param fullScore
@@ -40,17 +58,75 @@ public class StatisticsUtils {
 		return (haverage - laverage) / fullScore;
 	}
 
-	public static void main(String[] args) {
-		List<Float> list = new ArrayList<>(391);
-		for (int i = 0; i < 391; i++) {
-			list.add((float) i);
-		}
-		discrimination(list, 200);
+	public static void main(String[] args) throws Exception {
+		PoiExcelReader excelReader = new PoiExcelReader(
+				new File(StatisticsUtils.class.getResource("f_value.xls").getPath()));
+		excelReader.selSheet(0);
+
+		System.out.println(excelReader.getOneCell(1, 1, false));
 	}
 
-	// 信度
-	public static double reliability(List<Float> list, float... averages) {
-		return 0;
+	/**
+	 * 信度
+	 * @param questionCount 问题数量
+	 * @param scores 学生的分数集合
+	 * @param oddScores 学生的奇数题分数集合
+	 * @param evenScores 学生的偶数题分数集合
+	 * @param variance 学生分数方差
+	 * @return
+	 * @throws Exception
+	 */
+	public static double reliability(int questionCount, List<Float> scores, List<Float> oddScores,
+			List<Float> evenScores, double variance) throws Exception {
+
+		double oddAvg = average(oddScores);
+		double oddVariance = variance(oddScores, oddAvg);
+
+		double evenAvg = average(evenScores);
+		double evenVariance = variance(evenScores, evenAvg);
+
+		int y = questionCount / 2;
+		int x = questionCount - y;
+
+		if (x <= 50 && y <= 50) {
+			PoiExcelReader excelReader = new PoiExcelReader(
+					new File(StatisticsUtils.class.getResource("f_value.xls").getPath()));
+			excelReader.selSheet(0);
+
+			double f = 0;
+			double f_s = 0;
+
+			if (oddVariance > evenVariance) {
+				f = oddVariance / evenVariance;
+				f_s = Double.parseDouble(excelReader.getOneCell(x - 1, y - 1, false));
+			} else {
+				f = evenVariance / oddVariance;
+				f_s = Double.parseDouble(excelReader.getOneCell(y - 1, x - 1, false));
+			}
+
+			if (f <= f_s) {
+				double rAvg = 0;
+				if (scores.size() > 0) {
+					double total = 0;
+					for (int i = 0; i < oddScores.size(); i++) {
+						total = total + oddScores.get(i) * evenScores.get(i);
+					}
+					rAvg = total / scores.size();
+				}
+				double r = (rAvg - oddAvg * evenAvg) / (Math.sqrt(oddVariance) * Math.sqrt(evenVariance));
+				return 2 * r / (1 + r);
+			}
+		}
+
+		double dvariance = 0d;
+		List<Float> list = new ArrayList<>();
+		if (scores.size() > 0) {
+			for (int i = 0; i < oddScores.size(); i++) {
+				list.add(Math.abs(oddScores.get(i) - evenScores.get(i)));
+			}
+			dvariance = variance(list);
+		}
+		return 1 - dvariance / variance;
 	}
 
 	/**
