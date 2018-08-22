@@ -2,6 +2,7 @@ package uitls;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.PriorityQueue;
 
@@ -57,15 +58,7 @@ public class StatisticsUtils {
 		double laverage = average(llist);
 		return (haverage - laverage) / fullScore;
 	}
-
-	public static void main(String[] args) throws Exception {
-		PoiExcelReader excelReader = new PoiExcelReader(
-				new File(StatisticsUtils.class.getResource("f_value.xls").getPath()));
-		excelReader.selSheet(0);
-
-		System.out.println(excelReader.getOneCell(1, 1, false));
-	}
-
+	
 	/**
 	 * 信度
 	 * 
@@ -135,6 +128,14 @@ public class StatisticsUtils {
 		return 1 - dvariance / variance;
 	}
 
+	public static void main(String[] args) throws Exception {
+		List<Float> list =Arrays.asList(0f,1f,2f,3f,4f,5f,6f,7f,8f,9f);
+
+		System.out.println(median(list, false));
+	}
+
+	
+	
 	/**
 	 * 中位数
 	 * 
@@ -172,6 +173,7 @@ public class StatisticsUtils {
 				heap.add(list.get(i));
 			}
 		}
+		
 		if (list.size() % 2 == 1) {
 			return (double) heap.peek();
 		} else {

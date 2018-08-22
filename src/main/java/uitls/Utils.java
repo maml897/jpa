@@ -1,8 +1,10 @@
 package uitls;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Utils {
 
@@ -15,7 +17,7 @@ public class Utils {
 	 */
 	public static float key(Collection<Float> values, float value, boolean... flag) {
 
-		if (flag != null && flag.length > 0 && flag[0]) {// 取高
+		if (flag != null && flag.length > 0 && flag[0]) {// 取低
 			float result = -1;
 			for (Float f : values) {
 				if (f <= value) {
@@ -35,8 +37,14 @@ public class Utils {
 	}
 
 	public static void main(String[] args) {
-		List<Float> list = Arrays.asList(0f, 5f, 10f, 15f, 20f);
+		List<Float> list = new ArrayList<Float>();
+		for(float i=0;i<100000;i++){
+			list.add(i);
+		}
 
-		System.out.println(key(list, 5.2f, true));
+		long s=System.currentTimeMillis();
+		System.out.println(key(list, 8965.2f));
+		System.out.println(System.currentTimeMillis()-s);
+		
 	}
 }

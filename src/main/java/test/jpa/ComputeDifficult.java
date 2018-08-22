@@ -2,6 +2,7 @@ package test.jpa;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TooManyListenersException;
@@ -56,10 +57,9 @@ public class ComputeDifficult {
 		
 		list.add(0f);
 		list.add(10f);
-		for(float i=10;i<=750;i=i+20){
+		for(float i=30;i<=750;i=i+20){
 			list.add(i);
 		}
-		
 		
 		Map<Float, Double> map=compute(nsStudentSubjects, list, 150);
 		map.forEach((x,y)->{
@@ -89,34 +89,20 @@ public class ComputeDifficult {
 
 	public static Map<Float, Double> compute(List<Map<String, Object>> nsStudents, List<Float> list,
 			float subjectFull) {
+		
 		Map<Float, Double> map=LambdaUtils.groupby3(nsStudents, x->{
 			float result=Utils.key(list, (float)x.get("Score"));
 			return result;
 		},Collectors.averagingDouble(x->(float)x.get("YsScore")));
 		
-		
-		
-		/*
-		long l=nsStudents.stream().filter(x -> {
-			float studentScore = (float) x.get("Score");// 学生总分
-			return (studentScore <= 70 && studentScore > 50);
-
-		}).collect(Collectors.counting());
-		
-		
-		
-		System.out.println(l);
-		
-		Map<Float, Long> map1=LambdaUtils.groupby3(nsStudents, x->{
-			float result=Utils.key(list, (float)x.get("Score"));
-			return result;
-		},Collectors.counting());
-		*/
-		
-		for(float f:map.keySet()){
-			map.put(f, map.get(f)/subjectFull);
-		}
-		
-		return map;
+		Map<Float, Double> result = new LinkedHashMap<>();
+		list.forEach(x->{
+			double d =0;
+			if(map.containsKey(x)){
+				d=map.get(x)/subjectFull;
+			}
+			result.put(x, d);
+		});
+		return result;
 	}
 }
