@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.OptionalDouble;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -51,8 +52,8 @@ public class QuestionDifficult {
 			list.add(i);
 		}
 		
-//		test1(nsStudentSubjects, questions, fun, 150,list);
-		compute(nsStudentSubjects, questions, fun, 150,list);
+		test1(nsStudentSubjects, questions, fun, 150,list);
+//		compute(nsStudentSubjects, questions, fun, 150,list);
 	}
 
 	public static Map<Float, Double> test1(List<Map<String, Object>> nsStudents, List<Map<String, Object>> questions,
@@ -75,15 +76,18 @@ public class QuestionDifficult {
 			Map<Float, Double> questionresult = new LinkedHashMap<>();
 			for (Float score : map.keySet()) {
 				List<Long> studentIDs = map.get(score);
-				double sum = studentIDs.stream()
-						.mapToDouble(x -> (float) questionStudent.get(questionID).get(x).get("Score")).sum();
-				double diff = 0;
-				if (studentIDs.size() == 0) {
-					diff = 0;
-				} else {
-					diff = sum / studentIDs.size() / questionscore;
+				
+				if(studentIDs.size()>0){
+					double average = studentIDs.stream()
+							.mapToDouble(x -> (Float) questionStudent.get(questionID).get(x)
+									.get("Score")).average().getAsDouble();
+					questionresult.put(score,average/questionscore);
 				}
-				questionresult.put(score, diff);
+				else{
+					questionresult.put(score,0d);
+				}
+				
+				
 			}
 			System.out.println(questionresult);
 		}
