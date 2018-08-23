@@ -52,11 +52,11 @@ public class QuestionDifficult {
 			list.add(i);
 		}
 		
-		test1(nsStudentSubjects, questions, fun, 150,list);
+		compute1(nsStudentSubjects, questions, fun, 150,list);
 //		compute(nsStudentSubjects, questions, fun, 150,list);
 	}
 
-	public static Map<Float, Double> test1(List<Map<String, Object>> nsStudents, List<Map<String, Object>> questions,
+	public static Map<Float, Double> compute1(List<Map<String, Object>> nsStudents, List<Map<String, Object>> questions,
 			Function<Long, List<Map<String, Object>>> fun, float full,List<Float> steps) {
 		
 		Map<Float, List<Long>> map = scoreStudents(nsStudents, steps);// 分数--人员列表
@@ -103,7 +103,7 @@ public class QuestionDifficult {
 	 * @param step
 	 * @return
 	 */
-	public static void compute(List<Map<String, Object>> nsStudents, List<Map<String, Object>> questions,
+	public static void compute2(List<Map<String, Object>> nsStudents, List<Map<String, Object>> questions,
 			Function<Long, List<Map<String, Object>>> fun, float full,List<Float> steps) {
 
 		long s = System.currentTimeMillis();
@@ -120,7 +120,7 @@ public class QuestionDifficult {
 		System.out.println("用时：" + (System.currentTimeMillis() - s));
 	}
 
-	//分数（相近）-学生IDs
+	//分数（相近）-学生IDs compute1使用
 	private static Map<Float, List<Long>> scoreStudents(List<Map<String, Object>> studentSubjects, List<Float> list) {
 		Map<Float, List<Long>> map = LambdaUtils.groupby3(studentSubjects, x -> {
 			float f = Utils.key(list, (float) x.get("YsScore"));
@@ -139,13 +139,14 @@ public class QuestionDifficult {
 		return result;
 	}
 
-	//学生-分数（相近）
+	//学生-分数（相近） compute2使用
 	private static Map<Long, Float> studentScore(List<Map<String, Object>> studentSubjects, List<Float> list) {
 		Map<Long, Float> map = LambdaUtils.list2map2(studentSubjects, x -> (Long) x.get("NsStudentID"),
 				x -> Utils.key(list, (float) x.get("YsScore")));
 		return map;
 	}
 
+	// compute2使用
 	private static Map<Float, Double> compute(Map<Long, Float> studentScore, List<Map<String, Object>> questionStudents,
 			float questionScore, List<Float> list) {
 		Map<Float, Double> map = LambdaUtils.groupby3(questionStudents, x -> {
