@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.OptionalDouble;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -27,6 +26,7 @@ public class QuestionDifficult {
 		System.exit(0);
 	}
 
+	@SuppressWarnings("unchecked")
 	private static void questionDifficult(long nsID, long subjectID) {
 		Query query2 = JpaUtils.createNativeQuery(
 				"select nss.NsStudentID,nss.YsScore from n_nsstudentsubject nss join n_nsstudent ns on nss.NsStudentID=ns.ID and ns.nsID="
@@ -52,15 +52,17 @@ public class QuestionDifficult {
 			list.add(i);
 		}
 		
+		long s = System.currentTimeMillis();
 		compute1(nsStudentSubjects, questions, fun, 150,list);
-//		compute(nsStudentSubjects, questions, fun, 150,list);
+//		compute2(nsStudentSubjects, questions, fun, 150,list);
+		System.out.println("时间：" + (System.currentTimeMillis() - s));
 	}
 
 	public static Map<Float, Double> compute1(List<Map<String, Object>> nsStudents, List<Map<String, Object>> questions,
 			Function<Long, List<Map<String, Object>>> fun, float full,List<Float> steps) {
 		
 		Map<Float, List<Long>> map = scoreStudents(nsStudents, steps);// 分数--人员列表
-		long s = System.currentTimeMillis();
+		
 		for (Map<String, Object> question : questions) {
 			long questionID = (long) question.get("ID");
 			float questionscore = (float) question.get("Score");
@@ -86,12 +88,10 @@ public class QuestionDifficult {
 				else{
 					questionresult.put(score,0d);
 				}
-				
-				
 			}
 			System.out.println(questionresult);
 		}
-		System.out.println("时间：" + (System.currentTimeMillis() - s));
+		
 		return null;
 	}
 
@@ -105,8 +105,7 @@ public class QuestionDifficult {
 	 */
 	public static void compute2(List<Map<String, Object>> nsStudents, List<Map<String, Object>> questions,
 			Function<Long, List<Map<String, Object>>> fun, float full,List<Float> steps) {
-
-		long s = System.currentTimeMillis();
+		
 		Map<Long, Float> studentScore = studentScore(nsStudents, steps);
 		
 		for (Map<String, Object> question : questions) {
@@ -117,7 +116,6 @@ public class QuestionDifficult {
 			Map<Float, Double> map = compute(studentScore, questionStudents, questionscore, steps);
 			System.out.println(map);
 		}
-		System.out.println("用时：" + (System.currentTimeMillis() - s));
 	}
 
 	//分数（相近）-学生IDs compute1使用
