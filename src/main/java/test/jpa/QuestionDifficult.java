@@ -39,36 +39,36 @@ public class QuestionDifficult {
 						+ " and SubjectID=" + subjectID, HashMap.class);
 		List<Map<String, Object>> questions = query.getResultList();
 
-		Function<Long,List<Map<String, Object>>> fun=x->{
+		Function<Long, List<Map<String, Object>>> fun = x -> {
 			Query query1 = JpaUtils.createNativeQuery(
 					"select NsrQuestionID,NsStudentID,Score from n_nsrquestionstudent nq where nq.NsrQuestionID=" + x,
 					HashMap.class);
 			List<Map<String, Object>> questionStudents = query1.getResultList();
 			return questionStudents;
 		};
-		
+
 		List<Float> list = new ArrayList<>();
 		for (float i = 0; i <= 150; i = i + 5) {
 			list.add(i);
 		}
-		
+
 		long s = System.currentTimeMillis();
-		compute1(nsStudentSubjects, questions, fun, 150,list);
-//		compute2(nsStudentSubjects, questions, fun, 150,list);
+		// compute1(nsStudentSubjects, questions, fun, 150,list);
+		compute2(nsStudentSubjects, questions, fun, 150, list);
 		System.out.println("时间：" + (System.currentTimeMillis() - s));
 	}
 
 	public static Map<Float, Double> compute1(List<Map<String, Object>> nsStudents, List<Map<String, Object>> questions,
-			Function<Long, List<Map<String, Object>>> fun, float full,List<Float> steps) {
-		
+			Function<Long, List<Map<String, Object>>> fun, float full, List<Float> steps) {
+
 		Map<Float, List<Long>> map = scoreStudents(nsStudents, steps);// 分数--人员列表
-		
+
 		for (Map<String, Object> question : questions) {
 			long questionID = (long) question.get("ID");
 			float questionscore = (float) question.get("Score");
 			System.out.println("questionID:" + questionID);
 			List<Map<String, Object>> questionStudents = fun.apply(questionID);
-			
+
 			Map<Long, Map<Long, Map<String, Object>>> questionStudent = LambdaUtils.groupby(questionStudents, x -> {
 				return (Long) x.get("NsrQuestionID");
 			}, x -> {
@@ -78,20 +78,19 @@ public class QuestionDifficult {
 			Map<Float, Double> questionresult = new LinkedHashMap<>();
 			for (Float score : map.keySet()) {
 				List<Long> studentIDs = map.get(score);
-				
-				if(studentIDs.size()>0){
+
+				if (studentIDs.size() > 0) {
 					double average = studentIDs.stream()
-							.mapToDouble(x -> (Float) questionStudent.get(questionID).get(x)
-									.get("Score")).average().getAsDouble();
-					questionresult.put(score,average/questionscore);
-				}
-				else{
-					questionresult.put(score,0d);
+							.mapToDouble(x -> (Float) questionStudent.get(questionID).get(x).get("Score")).average()
+							.getAsDouble();
+					questionresult.put(score, average / questionscore);
+				} else {
+					questionresult.put(score, 0d);
 				}
 			}
 			System.out.println(questionresult);
 		}
-		
+
 		return null;
 	}
 
@@ -104,10 +103,10 @@ public class QuestionDifficult {
 	 * @return
 	 */
 	public static void compute2(List<Map<String, Object>> nsStudents, List<Map<String, Object>> questions,
-			Function<Long, List<Map<String, Object>>> fun, float full,List<Float> steps) {
-		
+			Function<Long, List<Map<String, Object>>> fun, float full, List<Float> steps) {
+
 		Map<Long, Float> studentScore = studentScore(nsStudents, steps);
-		
+
 		for (Map<String, Object> question : questions) {
 			long questionID = (long) question.get("ID");
 			float questionscore = (float) question.get("Score");
@@ -118,7 +117,7 @@ public class QuestionDifficult {
 		}
 	}
 
-	//分数（相近）-学生IDs compute1使用
+	// 分数（相近）-学生IDs compute1使用
 	private static Map<Float, List<Long>> scoreStudents(List<Map<String, Object>> studentSubjects, List<Float> list) {
 		Map<Float, List<Long>> map = LambdaUtils.groupby3(studentSubjects, x -> {
 			float f = Utils.key(list, (float) x.get("YsScore"));
@@ -129,15 +128,14 @@ public class QuestionDifficult {
 		list.forEach(x -> {
 			if (map.containsKey(x)) {
 				result.put(x, map.get(x));
-			}
-			else{
+			} else {
 				result.put(x, new ArrayList<>());
 			}
 		});
 		return result;
 	}
 
-	//学生-分数（相近） compute2使用
+	// 学生-分数（相近） compute2使用
 	private static Map<Long, Float> studentScore(List<Map<String, Object>> studentSubjects, List<Float> list) {
 		Map<Long, Float> map = LambdaUtils.list2map2(studentSubjects, x -> (Long) x.get("NsStudentID"),
 				x -> Utils.key(list, (float) x.get("YsScore")));
