@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class Utils {
@@ -26,7 +27,7 @@ public class Utils {
 			}
 			return result;
 
-		} else {
+		} else {//取高
 			for (Float f : values) {
 				if (f >= value) {
 					return f;
@@ -38,12 +39,23 @@ public class Utils {
 
 	public static void main(String[] args) {
 		List<Float> list = new ArrayList<Float>();
-		for(float i=0;i<100000;i++){
+		for(float i=0;i<1000;i++){
 			list.add(i);
 		}
-
+		
 		long s=System.currentTimeMillis();
-		System.out.println(key(list, 8965.2f));
+		List<Float> list1 = new ArrayList<Float>();
+		for(float i=0;i<1000;i++){
+			list1.add(i-0.5f);
+		}
+		
+		Map<Float, List<Float>> map=LambdaUtils.groupby(list1, x->{
+			float result=Utils.key(list, x);
+			return result;
+		});
+
+		
+		System.out.println(map);
 		System.out.println(System.currentTimeMillis()-s);
 		
 	}
