@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
+import java.util.function.ToDoubleFunction;
 import java.util.stream.Collectors;
 
 import javax.persistence.Query;
@@ -60,7 +62,7 @@ public class ComputeDifficult {
 			list.add(i);
 		}
 		
-		Map<Float, Double> map=compute(nsStudentSubjects, list, 150);
+		Map<Float, Double> map=compute(nsStudentSubjects,x->(float)x.get("Score"),x->(float)x.get("YsScore"), list, 150);
 		map.forEach((x,y)->{
 			System.out.println(x+"=="+y);
 		});
@@ -86,13 +88,22 @@ public class ComputeDifficult {
 		return map;
 	}
 
-	public static Map<Float, Double> compute(List<Map<String, Object>> nsStudents, List<Float> list,
+	/**
+	 * 
+	 * @param objects 待计算的对象列表
+	 * @param keyfunction key的字段 
+	 * @param averagefunction 计算平均分的字段
+	 * @param list 分数段
+	 * @param subjectFull 满分
+	 * @return
+	 */
+	public static <T> Map<Float, Double> compute(List<T> objects,Function<T,Float> keyfunction,ToDoubleFunction<T> averagefunction, List<Float> list,
 			float subjectFull) {
 		
-		Map<Float, Double> map=LambdaUtils.groupby3(nsStudents, x->{
-			float result=Utils.key(list, (float)x.get("Score"));
+		Map<Float, Double> map=LambdaUtils.groupby3(objects, x->{
+			float result=Utils.key(list, keyfunction.apply(x));
 			return result;
-		},Collectors.averagingDouble(x->(float)x.get("YsScore")));
+		},Collectors.averagingDouble(averagefunction));
 		
 		Map<Float, Double> result = new LinkedHashMap<>();
 		list.forEach(x->{

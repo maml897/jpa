@@ -67,7 +67,6 @@ public class ComputeScore {
 		
 		List<Map<String,Object>> result =new ArrayList<Map<String,Object>>();
 		
-		
 		long lastOrder = 1;
 		long lastCount = 0;
 		long lastSum = 0;
