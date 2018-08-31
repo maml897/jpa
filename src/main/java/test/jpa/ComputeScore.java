@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 import javax.persistence.Query;
 
 import config.jpa.JpaUtils;
+import uitls.LambdaUtils;
 
 public class ComputeScore {
 	public static void main(String[] args) {
@@ -63,7 +64,8 @@ public class ComputeScore {
 	 * @param function
 	 */
 	public static <T> List<Map<String,Object>> compute(List<T> scores,Function<T,Float> function) {
-		Map<Float, Long> group = scores.stream().collect(Collectors.groupingBy(function, LinkedHashMap::new, Collectors.counting()));
+		Map<Float, Long> group=LambdaUtils.groupby(scores, function, Collectors.counting());
+//		Map<Float, Long> group = scores.stream().collect(Collectors.groupingBy(function, LinkedHashMap::new, Collectors.counting()));
 		
 		List<Map<String,Object>> result =new ArrayList<Map<String,Object>>();
 		
