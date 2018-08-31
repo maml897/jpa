@@ -1,9 +1,11 @@
 package test.jpa;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import javax.persistence.Query;
@@ -28,7 +30,7 @@ public class ComputeScore {
 		}
 
 		System.out.println(nsStudentSubjects.size());
-		ComputeScore.compute(nsStudentSubjects);
+		ComputeScore.compute(nsStudentSubjects,t -> (float) t.get("YsScore"));
 		System.out.println(System.currentTimeMillis() - s);
 	}
 
@@ -47,7 +49,7 @@ public class ComputeScore {
 		}
 
 		System.out.println(nsStudentSubjects.size());
-		ComputeScore.compute(nsStudentSubjects);
+		ComputeScore.compute(nsStudentSubjects,t -> (float) t.get("YsScore"));
 		System.out.println(System.currentTimeMillis() - s);
 	}
 
@@ -55,26 +57,40 @@ public class ComputeScore {
 			List<Map<String, Object>> nsStudentSubjects) {
 	}
 
-	public static void compute(List<Map<String, Object>> nsStudentSubjects) {
-		Map<Float, Long> group2 = nsStudentSubjects.stream().collect(
-				Collectors.groupingBy(t -> (float) t.get("YsScore"), LinkedHashMap::new, Collectors.counting()));
-
+	/**
+	 * 计算每个分数的排名
+	 * @param scores
+	 * @param function
+	 */
+	public static <T> List<Map<String,Object>> compute(List<T> scores,Function<T,Float> function) {
+		Map<Float, Long> group = scores.stream().collect(Collectors.groupingBy(function, LinkedHashMap::new, Collectors.counting()));
+		
+		List<Map<String,Object>> result =new ArrayList<Map<String,Object>>();
+		
+		
 		long lastOrder = 1;
 		long lastCount = 0;
 		long lastSum = 0;
 
-		System.out.println("ysScore==order===ount===sum");
-		for (float ysScore : group2.keySet()) {
+		for (float score : group.keySet()) {
 
+			Map<String,Object> map =new HashMap<>();
+			
 			long order = lastOrder + lastCount;//
 			long sum = lastCount + lastSum;//
-			long count = group2.get(ysScore);
+			long count = group.get(score);
 
-			System.out.println(ysScore + "==" + order + "===" + count + "===" + sum);
-
+			map.put("score", score);
+			map.put("order", order);
+			map.put("count", count);
+			map.put("sum", sum);
+			result.add(map);
+			
 			lastOrder = order;
 			lastCount = count;
 			lastSum = sum;
 		}
+		
+		return result;
 	}
 }
