@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.OptionalDouble;
 import java.util.PriorityQueue;
 
 import common.excel.PoiExcelReader;
@@ -127,14 +128,6 @@ public class StatisticsUtils {
 		}
 		return 1 - dvariance / variance;
 	}
-
-	public static void main(String[] args) throws Exception {
-		List<Float> list =Arrays.asList(0f,1f,2f,3f,4f,5f,6f,7f,8f,9f);
-
-		System.out.println(median(list, false));
-	}
-
-	
 	
 	/**
 	 * 中位数
@@ -209,8 +202,11 @@ public class StatisticsUtils {
 	 * @return
 	 */
 	public static double top(List<Float> list) {
-		double result = list.stream().mapToDouble(x -> x).max().getAsDouble();
-		return result;
+		OptionalDouble optionalDouble=list.stream().mapToDouble(x -> x).max();
+		if(optionalDouble.isPresent()){
+			return -1;
+		}
+		return optionalDouble.getAsDouble();
 	}
 
 	/**
@@ -219,8 +215,14 @@ public class StatisticsUtils {
 	 * @param list
 	 * @return
 	 */
-	public static double bottom(List<Float> list) {
+	public static double bottom(List<Double> list) {
 		double result = list.stream().mapToDouble(x -> x).min().getAsDouble();
 		return result;
+	}
+	
+	public static void main(String[] args) throws Exception {
+		List<Float> list =Arrays.asList();
+		
+		System.out.println(top(list));
 	}
 }
