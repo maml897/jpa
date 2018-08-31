@@ -69,17 +69,17 @@ public class ComputeScore {
 		
 		List<Map<String,Object>> result =new ArrayList<Map<String,Object>>();
 		
-		long lastOrder = 1;
-		long lastCount = 0;
-		long lastSum = 0;
+		int lastOrder = 1;
+		int lastCount = 0;
+		int lastSum = 0;
 
 		for (float score : group.keySet()) {
 
 			Map<String,Object> map =new HashMap<>();
 			
-			long order = lastOrder + lastCount;//
-			long sum = lastCount + lastSum;//
-			long count = group.get(score);
+			int order = lastOrder + lastCount;//
+			int sum = lastCount + lastSum;//
+			int count = Integer.parseInt(String.valueOf(group.get(score))); 
 
 			map.put("score", score);
 			map.put("order", order);
