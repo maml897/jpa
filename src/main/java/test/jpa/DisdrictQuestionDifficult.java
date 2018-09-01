@@ -29,7 +29,7 @@ public class DisdrictQuestionDifficult {
 						+ nsID + " and SubjectID=" + subjectID,
 				HashMap.class);
 		List<Map<String, Object>> questions = query.getResultList();
-		QuestionDifficult.compute(nsStudentSubjects, questions, x->{//此处还是返回本地区的
+		ComputeDifficultQuestion.compute(nsStudentSubjects, questions, x->{//此处还是返回本地区的
 			return new ArrayList<>();
 		},150, 5);
 	}

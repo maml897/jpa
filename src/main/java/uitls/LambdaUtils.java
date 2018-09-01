@@ -48,6 +48,11 @@ public class LambdaUtils
 		return list.stream().collect(Collectors.groupingBy(keyExtractor, LinkedHashMap::new, Collectors.toList()));
 	}
 
+	public static <T, U, K> Map<U, K> groupby(Collection<T> list, Function<T, U> groupExtractor, Collector<T, ?, K> c)
+	{
+		return list.stream().collect(Collectors.groupingBy(groupExtractor, LinkedHashMap::new,c));
+	}
+	
 	public static <T, U, K> Map<U, Map<K, T>> groupby(List<T> list, Function<T, U> groupExtractor, Function<T, K> keyExtractor)
 	{
 		return list.stream().collect(Collectors.groupingBy(groupExtractor, LinkedHashMap::new, Collectors.toMap(keyExtractor, x -> x, (key1, key2) -> key2, LinkedHashMap::new)));
@@ -58,8 +63,5 @@ public class LambdaUtils
 		return list.stream().collect(Collectors.groupingBy(groupExtractor, LinkedHashMap::new, Collectors.groupingBy(keyExtractor, LinkedHashMap::new, Collectors.toList())));
 	}
 	
-	public static <T, U, K> Map<U, K> groupby3(List<T> list, Function<T, U> groupExtractor, Collector<T, ?, K> collector)
-	{
-		return list.stream().collect(Collectors.groupingBy(groupExtractor, LinkedHashMap::new,collector));
-	}
+	
 }

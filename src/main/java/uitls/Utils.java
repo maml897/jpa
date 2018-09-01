@@ -16,11 +16,11 @@ public class Utils {
 	 * @param values：排好序的value，从小到大
 	 * @return
 	 */
-	public static float key(Collection<Float> values, float value, boolean... flag) {
+	public static double key(Collection<Double> values, double value, boolean... flag) {
 
 		if (flag != null && flag.length > 0 && flag[0]) {// 取低
-			float result = -1;
-			for (Float f : values) {
+			double result = -1;
+			for (Double f : values) {
 				if (f <= value) {
 					result = f;
 				}
@@ -28,7 +28,7 @@ public class Utils {
 			return result;
 
 		} else {//取高
-			for (Float f : values) {
+			for (Double f : values) {
 				if (f >= value) {
 					return f;
 				}
@@ -38,19 +38,19 @@ public class Utils {
 	}
 
 	public static void main(String[] args) {
-		List<Float> list = new ArrayList<Float>();
-		for(float i=0;i<1000;i++){
+		List<Double> list = new ArrayList<>();
+		for(double i=0;i<1000;i++){
 			list.add(i);
 		}
 		
 		long s=System.currentTimeMillis();
-		List<Float> list1 = new ArrayList<Float>();
-		for(float i=0;i<1000;i++){
+		List<Double> list1 = new ArrayList<>();
+		for(double i=0;i<1000;i++){
 			list1.add(i-0.5f);
 		}
 		
-		Map<Float, List<Float>> map=LambdaUtils.groupby(list1, x->{
-			float result=Utils.key(list, x);
+		Map<Double, List<Double>> map=LambdaUtils.groupby(list1, x->{
+			double result=Utils.key(list, x);
 			return result;
 		});
 
