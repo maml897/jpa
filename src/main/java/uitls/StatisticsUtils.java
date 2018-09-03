@@ -143,12 +143,12 @@ public class StatisticsUtils {
 		}
 		if (orderd == null || orderd.length == 0 || orderd[0]) {
 			int number = list.size();
-			float median = 0f;
+			double median = 0f;
 			int x = number / 2;
 			if (number % 2 == 0) {
 				return (list.get(x - 1) + list.get(x)) / 2;
 			} else {
-				median = list.get(x).floatValue();
+				median = list.get(x);
 			}
 			return median;
 		}
@@ -190,7 +190,7 @@ public class StatisticsUtils {
 	 * @param list
 	 * @return
 	 */
-	public static int full(List<Double> list,float score) {
+	public static int full(List<Double> list,double score) {
 		int full = (int)list.stream().filter(x -> x ==score).count();
 		return full;
 	}
