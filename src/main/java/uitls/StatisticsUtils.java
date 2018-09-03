@@ -21,8 +21,11 @@ public class StatisticsUtils {
 	 */
 	public static double variance(List<Double> list, double... averages) {
 		double average = (averages == null || averages.length == 0) ? average(list) : averages[0];
-		double variance = list.stream().mapToDouble(x -> Math.pow(x - average, 2)).average().getAsDouble();
-		return variance;
+		OptionalDouble optionalDouble=list.stream().mapToDouble(x -> Math.pow(x - average, 2)).average();
+		if(!optionalDouble.isPresent()){
+			return 0d;
+		}
+		return optionalDouble.getAsDouble();
 	}
 
 	/**
@@ -228,8 +231,8 @@ public class StatisticsUtils {
 	}
 	
 	public static void main(String[] args) throws Exception {
-		List<Double> list =Arrays.asList(5d,6d);
+		List<Double> list =Arrays.asList();
 		
-		System.out.println(full(list,5d));
+		System.out.println(variance(list));
 	}
 }
