@@ -181,7 +181,11 @@ public class StatisticsUtils {
 	 * @return
 	 */
 	public static double average(List<Double> list) {
-		return list.stream().mapToDouble(x -> x).average().getAsDouble();
+		OptionalDouble od=list.stream().mapToDouble(x -> x).average();
+		if(!od.isPresent()){
+			return 0d;
+		}
+		return od.getAsDouble();
 	}
 
 	/**
@@ -203,8 +207,8 @@ public class StatisticsUtils {
 	 */
 	public static double top(List<Double> list) {
 		OptionalDouble optionalDouble=list.stream().mapToDouble(x -> x).max();
-		if(optionalDouble.isPresent()){
-			return -1;
+		if(!optionalDouble.isPresent()){
+			return 0;
 		}
 		return optionalDouble.getAsDouble();
 	}
@@ -216,13 +220,16 @@ public class StatisticsUtils {
 	 * @return
 	 */
 	public static double bottom(List<Double> list) {
-		double result = list.stream().mapToDouble(x -> x).min().getAsDouble();
-		return result;
+		OptionalDouble optionalDouble=list.stream().mapToDouble(x -> x).min();
+		if(!optionalDouble.isPresent()){
+			return 0;
+		}
+		return optionalDouble.getAsDouble();
 	}
 	
 	public static void main(String[] args) throws Exception {
-		List<Double> list =Arrays.asList();
+		List<Double> list =Arrays.asList(5d,6d);
 		
-		System.out.println(top(list));
+		System.out.println(full(list,5d));
 	}
 }
