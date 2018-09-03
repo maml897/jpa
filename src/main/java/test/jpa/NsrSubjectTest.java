@@ -24,7 +24,7 @@ public class NsrSubjectTest {
 
 		System.out.println(nsStudentSubjects.size());
 		
-		List<Float> list = LambdaUtils.list2list(nsStudentSubjects, x->(float)x.get("YsScore"));
+		List<Double> list = LambdaUtils.list2list(nsStudentSubjects, x->(double)x.get("YsScore"));
 		System.out.println(StatisticsUtils.stand(list));
 		System.out.println(StatisticsUtils.median(list,false));
 		

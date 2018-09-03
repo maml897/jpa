@@ -189,17 +189,17 @@ public class ComputeDifficultQuestion {
 	
 	/**
 	 * 
-	 * @param studentScore 学生-分数（相近）
-	 * @param questionStudentScores 学生-分数
+	 * @param studentScore 学生-分数（相近，总分或者科目等）
+	 * @param studentScores 学生-分数（小题或者科目等）
 	 * @param fullScore
 	 * @param segments
 	 * @return
 	 */
-	public static Map<Double, Double> computeStudentScore(Map<Long, Double> studentScore, Map<Long,Double> questionStudentScores,double fullScore, List<Double> segments) {
+	public static Map<Double, Double> computeStudentScore(Map<Long, Double> studentScore, Map<Long,Double> studentScores,double fullScore, List<Double> segments) {
 		
-		Map<Double, Double> map = LambdaUtils.groupby(questionStudentScores.keySet(), x -> {
+		Map<Double, Double> map = LambdaUtils.groupby(studentScores.keySet(), x -> {
 			return studentScore.get(x) == null ? -1 : studentScore.get(x);
-		}, Collectors.averagingDouble(x->questionStudentScores.get(x)));
+		}, Collectors.averagingDouble(x->studentScores.get(x)));
 
 		Map<Double, Double> result = new LinkedHashMap<>();
 		segments.forEach(x -> {

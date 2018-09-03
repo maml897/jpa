@@ -60,20 +60,20 @@ public class ComputeDifficult {
 	 * @param objects 待计算的对象列表
 	 * @param keyfunction key的字段 
 	 * @param averagefunction 计算平均分的字段
-	 * @param list 分数段
+	 * @param segments 分数段
 	 * @param fullScore 满分
 	 * @return
 	 */
-	public static <T> Map<Double, Double> compute(List<T> objects,Function<T,Double> keyfunction,ToDoubleFunction<T> averagefunction, List<Double> list,
+	public static <T> Map<Double, Double> compute(List<T> objects,Function<T,Double> keyfunction,ToDoubleFunction<T> averagefunction, List<Double> segments,
 			double fullScore) {
 		
 		Map<Double, Double> map=LambdaUtils.groupby(objects, x->{
-			double result=Utils.key(list, keyfunction.apply(x));
+			double result=Utils.key(segments, keyfunction.apply(x));
 			return result;
 		},Collectors.averagingDouble(averagefunction));
 		
 		Map<Double, Double> result = new LinkedHashMap<>();
-		list.forEach(x->{
+		segments.forEach(x->{
 			double d =0;
 			if(map.containsKey(x)){
 				d=map.get(x)/fullScore;

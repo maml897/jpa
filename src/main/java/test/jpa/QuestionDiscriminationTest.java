@@ -43,9 +43,9 @@ public class QuestionDiscriminationTest {
 			Query query = JpaUtils.createNativeQuery("select qs.NsStudentID,qs.Score from n_nsrquestionstudent qs where qs.NsrQuestionID=" + ID , HashMap.class);
 			List<Map<String,Object>> result = query.getResultList();
 			
-			Map<Long,Float> tmp = LambdaUtils.list2map2(result, x->(long)x.get("NsStudentID"),  x->(float)x.get("Score"));
+			Map<Long,Double> tmp = LambdaUtils.list2map2(result, x->(long)x.get("NsStudentID"),  x->(double)x.get("Score"));
 			
-			List<Float> list = new ArrayList<>();
+			List<Double> list = new ArrayList<>();
 			for(Map map0:students){
 				long studentID=(long)map0.get("ID");
 				if(tmp.containsKey(studentID)){
