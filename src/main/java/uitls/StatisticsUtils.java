@@ -19,7 +19,7 @@ public class StatisticsUtils {
 	 *            平均分，可以不传，不传的话就自动计算
 	 * @return
 	 */
-	public static double variance(List<Float> list, double... averages) {
+	public static double variance(List<Double> list, double... averages) {
 		double average = (averages == null || averages.length == 0) ? average(list) : averages[0];
 		double variance = list.stream().mapToDouble(x -> Math.pow(x - average, 2)).average().getAsDouble();
 		return variance;
@@ -33,7 +33,7 @@ public class StatisticsUtils {
 	 *            平均分，可以不传，不传的话就自动计算
 	 * @return
 	 */
-	public static double stand(List<Float> list, double... averages) {
+	public static double stand(List<Double> list, double... averages) {
 		double variance = variance(list, averages);
 		return variance > 0 ? Math.sqrt(variance) : 0;
 	}
@@ -46,14 +46,14 @@ public class StatisticsUtils {
 	 * @param fullScore
 	 * @return
 	 */
-	public static double discrimination(List<Float> list, float fullScore) {
+	public static double discrimination(List<Double> list, double fullScore) {
 		int statisticNum = list.size();
 
 		int hnum = statisticNum * 27 / 100;
 		int lnum = statisticNum - statisticNum * 73 / 100;
 
-		List<Float> hlist = list.subList(0, hnum);
-		List<Float> llist = list.subList(statisticNum - lnum, statisticNum);
+		List<Double> hlist = list.subList(0, hnum);
+		List<Double> llist = list.subList(statisticNum - lnum, statisticNum);
 
 		double haverage = average(hlist);
 		double laverage = average(llist);
@@ -76,8 +76,8 @@ public class StatisticsUtils {
 	 * @return
 	 * @throws Exception
 	 */
-	public static double reliability(int questionCount, List<Float> scores, List<Float> oddScores,
-			List<Float> evenScores, double variance) throws Exception {
+	public static double reliability(int questionCount, List<Double> scores, List<Double> oddScores,
+			List<Double> evenScores, double variance) throws Exception {
 
 		double oddAvg = average(oddScores);
 		double oddVariance = variance(oddScores, oddAvg);
@@ -119,7 +119,7 @@ public class StatisticsUtils {
 		}
 
 		double dvariance = 0d;
-		List<Float> list = new ArrayList<>();
+		List<Double> list = new ArrayList<>();
 		if (scores.size() > 0) {
 			for (int i = 0; i < oddScores.size(); i++) {
 				list.add(Math.abs(oddScores.get(i) - evenScores.get(i)));
@@ -180,7 +180,7 @@ public class StatisticsUtils {
 	 * @param list
 	 * @return
 	 */
-	public static double average(List<Float> list) {
+	public static double average(List<Double> list) {
 		return list.stream().mapToDouble(x -> x).average().getAsDouble();
 	}
 
