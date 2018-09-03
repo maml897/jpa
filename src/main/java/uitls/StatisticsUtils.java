@@ -137,7 +137,7 @@ public class StatisticsUtils {
 	 *            列表是否已经进行了排序，如果没有需要false
 	 * @return
 	 */
-	public static double median(List<Float> list, boolean... orderd) {
+	public static double median(List<Double> list, boolean... orderd) {
 		if (list.size() == 0) {
 			return 0;
 		}
@@ -155,7 +155,7 @@ public class StatisticsUtils {
 
 		// 无序列表快速得到中位数https://www.cnblogs.com/shizhh/p/5746151.html
 		int heapSize = list.size() / 2 + 1;
-		PriorityQueue<Float> heap = new PriorityQueue<>(heapSize);
+		PriorityQueue<Double> heap = new PriorityQueue<>(heapSize);
 		for (int i = 0; i < heapSize; i++) {
 			heap.add(list.get(i));
 		}
