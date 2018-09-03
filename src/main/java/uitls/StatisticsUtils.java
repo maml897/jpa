@@ -190,7 +190,7 @@ public class StatisticsUtils {
 	 * @param list
 	 * @return
 	 */
-	public static int full(List<Float> list,float score) {
+	public static int full(List<Double> list,float score) {
 		int full = (int)list.stream().filter(x -> x ==score).count();
 		return full;
 	}
@@ -201,7 +201,7 @@ public class StatisticsUtils {
 	 * @param list
 	 * @return
 	 */
-	public static double top(List<Float> list) {
+	public static double top(List<Double> list) {
 		OptionalDouble optionalDouble=list.stream().mapToDouble(x -> x).max();
 		if(optionalDouble.isPresent()){
 			return -1;
@@ -221,7 +221,7 @@ public class StatisticsUtils {
 	}
 	
 	public static void main(String[] args) throws Exception {
-		List<Float> list =Arrays.asList();
+		List<Double> list =Arrays.asList();
 		
 		System.out.println(top(list));
 	}
