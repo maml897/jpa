@@ -11,16 +11,16 @@
 			<property name="hibernate.connection.username" value="root" />
 			<property name="hibernate.connection.password" value="mysql" />
 			
-			<!-- 
+			
 			<property name="hibernate.connection.url"
-				value="jdbc:mysql://127.0.0.1:3306/jpa?createDatabaseIfNotExist=true&amp;useUnicode=true&amp;characterEncoding=utf8" />
+				value="jdbc:mysql://172.16.0.129:3306/wzjxzlgl?createDatabaseIfNotExist=true&amp;useUnicode=true&amp;characterEncoding=utf8" />
 			<property name="hibernate.hbm2ddl.auto" value="update" />
-				 -->
-				 
+				
+				<!--  
 			<property name="hibernate.connection.url"
 				value="jdbc:mysql://172.16.0.129:3306/ytw?createDatabaseIfNotExist=true&amp;useUnicode=true&amp;characterEncoding=utf8" />
 			<property name="hibernate.hbm2ddl.auto" value="validate" />
-			
+			 -->
 			<property name="hibernate.show_sql" value="false"/>
 			<property name="hibernate.max_fetch_depth" value="3" />
 			

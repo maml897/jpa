@@ -1,17 +1,13 @@
 package test.jpa;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import javax.persistence.Query;
 
 import config.jpa.JpaUtils;
-import uitls.LambdaUtils;
+import uitls.ComputeUtils;
 
 public class ComputeScore {
 	public static void main(String[] args) {
@@ -19,6 +15,12 @@ public class ComputeScore {
 		System.exit(0);
 	}
 
+	/**
+	 * 计算科目分值排名等
+	 * @param nsID
+	 * @param subjectID
+	 * @param nsStudentSubjects
+	 */
 	public static void computeSubject(long nsID, long subjectID, List<Map<String, Object>> nsStudentSubjects) {
 		long s = System.currentTimeMillis();
 		if(nsStudentSubjects==null){
@@ -31,7 +33,7 @@ public class ComputeScore {
 		}
 
 		System.out.println(nsStudentSubjects.size());
-		ComputeScore.compute(nsStudentSubjects,t -> (float) t.get("YsScore"));
+		ComputeUtils.computeScore(nsStudentSubjects,t -> (double) t.get("YsScore"));
 		System.out.println(System.currentTimeMillis() - s);
 	}
 
@@ -50,48 +52,12 @@ public class ComputeScore {
 		}
 
 		System.out.println(nsStudentSubjects.size());
-		ComputeScore.compute(nsStudentSubjects,t -> (float) t.get("YsScore"));
+		ComputeUtils.computeScore(nsStudentSubjects,t -> (double) t.get("YsScore"));
 		System.out.println(System.currentTimeMillis() - s);
 	}
 
 	public static void computeSchoolSubject(long nsID, long subjectID, long schoolID,
 			List<Map<String, Object>> nsStudentSubjects) {
 	}
-
-	/**
-	 * 计算每个分数的排名
-	 * @param scores
-	 * @param function
-	 */
-	public static <T> List<Map<String,Object>> compute(List<T> scores,Function<T,Float> function) {
-		Map<Float, Long> group=LambdaUtils.groupby(scores, function, Collectors.counting());
-//		Map<Float, Long> group = scores.stream().collect(Collectors.groupingBy(function, LinkedHashMap::new, Collectors.counting()));
-		
-		List<Map<String,Object>> result =new ArrayList<Map<String,Object>>();
-		
-		int lastOrder = 1;
-		int lastCount = 0;
-		int lastSum = 0;
-
-		for (float score : group.keySet()) {
-
-			Map<String,Object> map =new HashMap<>();
-			
-			int order = lastOrder + lastCount;//
-			int sum = lastCount + lastSum;//
-			int count = Integer.parseInt(String.valueOf(group.get(score))); 
-
-			map.put("score", score);
-			map.put("order", order);
-			map.put("count", count);
-			map.put("sum", sum);
-			result.add(map);
-			
-			lastOrder = order;
-			lastCount = count;
-			lastSum = sum;
-		}
-		
-		return result;
-	}
+	
 }

@@ -35,7 +35,6 @@ public class Utils {
 				}
 			}
 		}
-
 		if (toup) {//从小到大
 			
 			// 取低
