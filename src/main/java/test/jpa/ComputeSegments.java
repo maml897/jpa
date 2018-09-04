@@ -19,7 +19,7 @@ public class ComputeSegments {
 	
 	
 	public static void compute(long nsID, long subjectID) {
-		long s = System.currentTimeMillis();
+		
 		Query query2 = JpaUtils.createNativeQuery(
 				"select Score,CCount from n_nsrsubjectscore nss where NsID="
 						+ nsID + " and SubjectID=" + subjectID,HashMap.class);
@@ -31,6 +31,7 @@ public class ComputeSegments {
 			steps.add(d);
 		}
 		
+		long s = System.currentTimeMillis();
 		Map<Double,?> map=ComputeUtils.computeSegments(steps, result, x->Double.parseDouble(x.get("Score").toString()), x->(Integer)x.get("CCount"), true);
 
 		map.forEach((x,y)->{

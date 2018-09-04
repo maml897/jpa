@@ -84,4 +84,33 @@ public class ComputeUtils {
 		}
 		return result;
 	}
+	
+	/**
+	 * 获取分段
+	 * @param up 上限
+	 * @param down 下限
+	 * @param step 步长
+	 * @param fullscore 满分
+	 * @param toup 从低到高，还是从高到低
+	 * @return
+	 */
+	public static List<Double> getSegments(double down,double up, int step, double fullscore,boolean... toups) {
+		boolean toup=false;
+		if(toups!=null &&toups.length>0&&toups[0]){
+			toup=true;
+		}
+		
+		List<Double> list =Arrays.asList(down);
+		if(toup){
+			while(down<=up){
+				list.add(down);
+				down=down+step;
+			}
+		}
+		return null;
+	}
+	
+	public static void main(String[] args) {
+		//System.out.println(getSegments(down, up, step, fullscore, toups));
+	}
 }
