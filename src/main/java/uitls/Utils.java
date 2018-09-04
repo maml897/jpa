@@ -1,62 +1,143 @@
 package uitls;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
 public class Utils {
 
 	/**
-	 * 返回values 中距离value 最近的值，可以上取，也可以下取
-	 * 取高：低于最低分的都算作最低分；取低：高于最高分的都算作最高分
+	 * 返回values 中距离value 最近的值，可以上取，也可以下取 取高：低于最低分的都算作最低分；取低：高于最高分的都算作最高分
+	 * 
 	 * @param value：
 	 * @param values：排好序的value，从小到大
 	 * @return
 	 */
-	public static double key(Collection<Double> values, double value, boolean... flag) {
+	public static double key(Collection<Double> values, double value, boolean... flags) {
 
-		if (flag != null && flag.length > 0 && flag[0]) {// 取低
-			double result = -1;
-			for (Double f : values) {
-				if (f <= value) {
-					result = f;
+		// 1.从小到大
+		// 2.从大到小
+		// 3.取低
+		// 4.取高
+
+		boolean up = true;// 默认取高
+		boolean toup = true;// 默认列表排序从小到大
+
+		if (flags != null) {
+			if (flags.length > 0) {
+				up = flags[0];
+				if (flags.length > 1) {
+					toup = flags[1];
 				}
 			}
-			return result;
+		}
 
-		} else {//取高
+		if (toup) {//从小到大
+			
+			// 取低
+			if(!up)
+			{
+				double result = -1;
+				for (Double f : values) {
+					if (f <= value) {
+						result = f;
+					} 
+					else 
+					{
+						break;
+					}
+				}
+				return result;
+			}
+			
+			// 取高
 			for (Double f : values) {
 				if (f >= value) {
 					return f;
 				}
 			}
 			return -1;
+		} 
+		else //从大到小
+		{
+			// 取低
+			if(!up)
+			{
+				for (Double f : values) {
+					if (f <= value) {
+						return f;
+					}
+				}
+				return -1;
+			}
+			else// 取高
+			{
+				double result = -1;
+				for (Double f : values) {
+					if (f >= value) {
+						result = f;
+					} 
+					else 
+					{
+						break;
+					}
+				}
+				return result;
+			}
 		}
 	}
+	
+	public static List<Double> keys(Collection<Double> values, double value){
+		if(values.contains(value)){
+			return Arrays.asList(value,value);
+		}
+		
+		List<Double> result = new ArrayList<>();
+		result.add(values.stream().filter(x->x<value).mapToDouble(x->x).max().orElse(0d));
+		result.add(values.stream().filter(x->x>value).mapToDouble(x->x).min().orElse(0d));
+		
+		if(result.size()==1){
+			result.add(result.get(0));
+		}
+		return result;
+	}
+	
+	
 
 	public static void main(String[] args) {
 		List<Double> list = new ArrayList<>();
-		for(double i=0;i<1000;i++){
+		for (double i = 10; i <= 750; i=i+20) {
 			list.add(i);
 		}
-		
-		long s=System.currentTimeMillis();
+
+		long s = System.currentTimeMillis();
 		List<Double> list1 = new ArrayList<>();
-		for(double i=0;i<1000;i++){
-			list1.add(i-0.5f);
+		for (double i = 0; i <50000; i++) {
+			list1.add(750*Math.random());
+		}
+
+		Map<Double, List<Double>> map = LambdaUtils.groupby(list1, x -> {
+			Double r = Utils.key(list, x,false);
+			return r;
+		});
+		
+		Map<Double, List<Double>> result =new LinkedHashMap<>();
+		for(double key:list){
+			if(map.containsKey(key)){
+				result.put(key, map.get(key));
+			}
+			else{
+				result.put(key, new ArrayList<>());
+			}
 		}
 		
-		Map<Double, List<Double>> map=LambdaUtils.groupby(list1, x->{
-			double result=Utils.key(list, x);
-			return result;
-		});
-
-		
-		System.out.println(map);
-		System.out.println(System.currentTimeMillis()-s);
-		
+//		result.forEach((x,y)->{
+//			System.out.println(x+"=="+y);
+//		});
+		System.out.println(System.currentTimeMillis() - s);
 	}
 }
