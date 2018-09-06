@@ -9,6 +9,7 @@ import javax.persistence.Query;
 import config.jpa.JpaUtils;
 import uitls.ComputeUtils;
 
+
 public class ComputeSegments {
 
 	public static void main(String[] args) {
@@ -39,7 +40,7 @@ public class ComputeSegments {
 		
 		
 		s = System.currentTimeMillis();
-		List<Map<String,Object>> list=ComputeUtils.computeSegmentss(steps, result, x->Double.parseDouble(x.get("Score").toString()), x->(Integer)x.get("CCount"), true);
+		List<Map<String,Object>> list=ComputeUtils.computeSegmentss(100, 0, 1,result, x->Double.parseDouble(x.get("Score").toString()), x->(Integer)x.get("CCount"), true);
 		
 		System.out.println(list);
 		System.out.println(System.currentTimeMillis()-s);

@@ -7,12 +7,10 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Function;
-import java.util.function.Supplier;
 import java.util.function.ToIntFunction;
 import java.util.stream.Collectors;
-
-import org.springframework.format.datetime.joda.MillisecondInstantPrinter;
 
 public class ComputeUtils
 {
@@ -69,9 +67,14 @@ public class ComputeUtils
 	 *            数量属性
 	 * @return
 	 */
-	public static <T> Map<Double, ?> computeSegments(List<Double> segments, List<T> objects, Function<T, Double> scoreExtractor, ToIntFunction<T> countExtractor, boolean... withSums)
+	public static <T> Map<Double, ?> computeSegments(double top,double bottom,int step,List<T> objects, Function<T, Double> scoreExtractor, ToIntFunction<T> countExtractor, boolean... withSums)
 	{
-
+		List<Double> segments = getSegments(top, bottom, step);
+		if (!segments.contains(0d))
+		{
+			segments.add(0d);
+		}
+		
 		Map<Double, Integer> map = LambdaUtils.groupby(objects, x -> Utils.key(segments, scoreExtractor.apply(x), false, false), Collectors.summingInt(countExtractor));
 		Map<Double, Integer> result = new LinkedHashMap<>();
 		for (double key : segments)
@@ -100,50 +103,54 @@ public class ComputeUtils
 		}
 		return result;
 	}
-	
-	
-	public static <T,U> List<Map<String, Object>> computeSegmentss(List<Double> segments, List<T> objects, Function<T, Double> scoreExtractor, ToIntFunction<T> countExtractor, boolean... withSums)
+
+	public static <T, U> List<Map<String, Object>> computeSegmentss(double top,double bottom,int step,List<T> objects, Function<T, Double> scoreExtractor, ToIntFunction<T> countExtractor, boolean... withSums)
 	{
-		
-		Map<Double, Integer> map = LambdaUtils.groupby(objects, x -> Utils.key(segments, scoreExtractor.apply(x), false, false), Collectors.summingInt(countExtractor));
-		
-		List<Map<String, Object>> list =new ArrayList<>();
-		for (double key : segments)
+		List<Double> segments = getSegments(top, bottom, step);
+		if (!segments.contains(0d))
 		{
+			segments.add(0d);
+		}
+
+		Map<Double, Integer> map = LambdaUtils.groupby(objects, x -> Utils.key(segments, scoreExtractor.apply(x), false, false), Collectors.summingInt(countExtractor));
+		List<Map<String, Object>> list = new ArrayList<>();
+		for (int i = 0; i < segments.size(); i++)
+		{
+			double key = segments.get(i);
 			Integer count = map.get(key);
-			if(count==null){
-				count=0;
+			if (count == null)
+			{
+				count = 0;
 			}
-			
+
 			Map<String, Object> onemap = new HashMap<>();
 			onemap.put("id", key);
 			onemap.put("count", count);
-			onemap.put("desc", Utils.keys(segments, key));
+
+			if (i == 0)
+			{
+				onemap.put("desc", "[" + key + ",)");
+			}
+			else
+			{
+				onemap.put("desc", "[" + key + "," + segments.get(i - 1) + ")");
+			}
 			list.add(onemap);
 		}
-		
+
 		// 累计
 		if (withSums != null && withSums.length > 0 && withSums[0])
 		{
 			int sum = 0;
 			for (Map<String, Object> onemap : list)
 			{
-				int number = (int)onemap.get("count");
+				int number = (int) onemap.get("count");
 				sum += number;
-				onemap.put("sum",sum);
+				onemap.put("sum", sum);
 			}
 		}
 		return list;
 	}
-	
-	
-
-	public static void main(String[] args)
-	{
-
-	}
-
-	
 
 	/**
 	 * 获取分段
