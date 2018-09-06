@@ -6,7 +6,6 @@ import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 public class Utils {
 
@@ -24,8 +23,8 @@ public class Utils {
 		// 3.取低
 		// 4.取高
 
-		boolean up = true;// 默认取高
-		boolean toup = true;// 默认列表排序从小到大
+		boolean up = true;// 默认取高,也就是5.5 会认为是6
+		boolean toup = true;// 默认列表排序从小到大，也就是 1，2，3
 
 		if (flags != null) {
 			if (flags.length > 0) {

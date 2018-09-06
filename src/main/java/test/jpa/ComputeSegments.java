@@ -1,6 +1,5 @@
 package test.jpa;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,18 +25,23 @@ public class ComputeSegments {
 		
 		List<Map<String,Object>> result = query2.getResultList();
 
-		List<Double> steps =new ArrayList<>();
-		for(double d=100;d>=0;d--){
-			steps.add(d);
-		}
+		List<Double> steps =ComputeUtils.getSegments(100, 0, 1, true);
+	
 		
 		long s = System.currentTimeMillis();
-		Map<Double,?> map=ComputeUtils.computeSegments(steps, result, x->Double.parseDouble(x.get("Score").toString()), x->(Integer)x.get("CCount"), true);
-
-		map.forEach((x,y)->{
-			System.out.println(x+"=="+y);
-		});
+//		Map<Double,?> map=ComputeUtils.computeSegments(steps, result, x->Double.parseDouble(x.get("Score").toString()), x->(Integer)x.get("CCount"), true);
 		
+//		map.forEach((x,y)->{
+//			System.out.println(x+"=="+y);
+//		});
+		
+		System.out.println(System.currentTimeMillis()-s);
+		
+		
+		s = System.currentTimeMillis();
+		List<Map<String,Object>> list=ComputeUtils.computeSegmentss(steps, result, x->Double.parseDouble(x.get("Score").toString()), x->(Integer)x.get("CCount"), true);
+		
+		System.out.println(list);
 		System.out.println(System.currentTimeMillis()-s);
 	}
 }
