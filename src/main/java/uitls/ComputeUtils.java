@@ -337,5 +337,55 @@ public class ComputeUtils
 		}
 		return list;
 	}
+	
+	// 小题区分度分析
+	@SuppressWarnings("unchecked")
+	public static <T> List<Map<String, Object>> discrimination(List<T> nsrQuestions,Function<T,Double> fun,ToDoubleFunction<T> scorefun,ToIntFunction<T> typefun)
+	{
+		List<Map<String, Object>> list = new ArrayList<>();
+		Map<String, Object> map1 = new HashMap<>();
+		map1.put("name", "优秀");
+		map1.put("info", "D≥0.4");
+
+		Predicate<T> predicate1 = x -> fun.apply(x) >= 0.4;
+		map1.put("predicate", predicate1);
+
+		Map<String, Object> map2 = new HashMap<>();
+		map2.put("name", "良好");
+		map2.put("info", "0.3≤D＜0.4");
+		Predicate<T> predicate2 = x -> fun.apply(x) >= 0.3 && fun.apply(x) < 0.4;
+		map2.put("predicate", predicate2);
+
+		Map<String, Object> map3 = new HashMap<>();
+		map3.put("name", "一般");
+		map3.put("info", "0.2≤D＜0.3");
+		Predicate<T> predicate3 = x -> fun.apply(x) >= 0.2 && fun.apply(x) < 0.3;
+		map3.put("predicate", predicate3);
+
+		Map<String, Object> map4 = new HashMap<>();
+		map4.put("name", "较低");
+		map4.put("info", "D＜0.2");
+		Predicate<T> predicate4 = x -> fun.apply(x) < 0.2;
+		map4.put("predicate", predicate4);
+
+		list.add(map1);
+		list.add(map2);
+		list.add(map3);
+		list.add(map4);
+
+		for (Map<String, Object> map : list)
+		{
+			@SuppressWarnings("rawtypes")
+			List<T> questions = LambdaUtils.filter(nsrQuestions, (Predicate) map.get("predicate"));
+			if (questions == null)
+			{
+				questions = new ArrayList<>();
+			}
+			map.put("score", questions.stream().mapToDouble(scorefun).sum());
+			map.put("list", questions);
+			map.put("map", LambdaUtils.groupbyboolean(questions, x -> typefun.applyAsInt(x) == 1));
+		}
+		return list;
+	}
 
 }
