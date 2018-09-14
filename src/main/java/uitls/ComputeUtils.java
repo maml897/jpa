@@ -7,8 +7,9 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.function.ToDoubleFunction;
 import java.util.function.ToIntFunction;
 import java.util.stream.Collectors;
 
@@ -294,25 +295,47 @@ public class ComputeUtils
 		return segmentNames;
 	}
 
-	// public static void main(String[] args) {
-	// long s = System.currentTimeMillis();
-	//
-	// List<Double> list1 = getSegments(10, 110, 30,true);
-	// System.out.println(list1);
-	// System.out.println(System.currentTimeMillis() - s);
-	//
-	// s = System.currentTimeMillis();
-	// System.out.println(getSegmentNames(list1, 10,false));
-	// System.out.println(System.currentTimeMillis() - s);
-	//
-	// System.out.println("==================================================================================");
-	// s = System.currentTimeMillis();
-	// List<Double> list = getSegments(150, 0, 24);
-	// System.out.println(list);
-	// System.out.println(System.currentTimeMillis() - s);
-	//
-	// s = System.currentTimeMillis();
-	// System.out.println(getSegmentNames(list,0));
-	// System.out.println(System.currentTimeMillis() - s);
-	// }
+	@SuppressWarnings("unchecked")
+	public static <T> List<Map<String, Object>> difficulty(List<T> nsrQuestions,Function<T,Double> difficultyfun,ToDoubleFunction<T> scorefun,ToIntFunction<T> typefun)
+	{
+		List<Map<String, Object>> list = new ArrayList<>();
+		Map<String, Object> map1 = new HashMap<>();
+		map1.put("name", "难题");
+		map1.put("info", "p≤0.4");
+		
+		Predicate<T> predicate1 = x->difficultyfun.apply(x)<=0.4;
+		map1.put("predicate", predicate1);
+
+		Map<String, Object> map2 = new HashMap<>();
+		map2.put("name", "中等题");
+		map2.put("info", "0.7＞p＞0.4");
+		Predicate<T> predicate2 = x -> difficultyfun.apply(x) > 0.4 && difficultyfun.apply(x) < 0.7;
+		map2.put("predicate", predicate2);
+
+		Map<String, Object> map3 = new HashMap<>();
+		map3.put("name", "简单题");
+		map3.put("info", "p≥0.7");
+		Predicate<T> predicate3 = x -> difficultyfun.apply(x) >= 0.7;
+		map3.put("predicate", predicate3);
+
+		list.add(map1);
+		list.add(map2);
+		list.add(map3);
+
+		for (Map<String, Object> map : list)
+		{
+			@SuppressWarnings("rawtypes")
+			List<T> questions = LambdaUtils.filter(nsrQuestions, (Predicate) map.get("predicate"));
+			if (questions == null)
+			{
+				questions = new ArrayList<>();
+			}
+			map.put("score", questions.stream().mapToDouble(scorefun).sum());
+			map.put("list", questions);
+			//map.put("map", LambdaUtils.groupby(questions, x -> x.getType() == BaseConstants.QUESTION_TYPE_OBJECTIVE));
+			map.put("map", LambdaUtils.groupbyboolean(questions, x -> typefun.applyAsInt(x) == 1));
+		}
+		return list;
+	}
+
 }

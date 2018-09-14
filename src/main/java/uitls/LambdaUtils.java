@@ -64,4 +64,8 @@ public class LambdaUtils
 	}
 	
 	
+	public static <T> Map<Boolean, List<T>> groupbyboolean(List<T> list, Predicate<T> keyExtractor)
+	{
+		return list.stream().collect(Collectors.partitioningBy(keyExtractor));
+	}
 }
