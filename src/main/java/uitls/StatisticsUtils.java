@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.PriorityQueue;
+import java.util.function.Predicate;
 
 import common.excel.PoiExcelReader;
 
@@ -188,9 +189,9 @@ public class StatisticsUtils {
 	 * @param list
 	 * @return
 	 */
-	public static int full(List<Double> list,double score) {
-		int full = (int)list.stream().filter(x -> x ==score).count();
-		return full;
+	public static <T> int count(List<T> list,Predicate<T> predicate) {
+		int count = (int)list.stream().filter(predicate).count();
+		return count;
 	}
 
 	/**
@@ -199,7 +200,7 @@ public class StatisticsUtils {
 	 * @param list
 	 * @return
 	 */
-	public static double top(List<Double> list) {
+	public static double max(List<Double> list) {
 		return list.stream().mapToDouble(x -> x).max().orElse(0);
 	}
 
@@ -209,7 +210,7 @@ public class StatisticsUtils {
 	 * @param list
 	 * @return
 	 */
-	public static double bottom(List<Double> list) {
+	public static double min(List<Double> list) {
 		return list.stream().mapToDouble(x -> x).min().orElse(0);
 	}
 	
