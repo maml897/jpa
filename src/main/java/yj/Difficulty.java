@@ -60,7 +60,7 @@ public class Difficulty
 					.createNativeQuery("SELECT * FROM s_sesubjectdifficulty where seID=" + seID + " and SubjectID=" + (long) subject.get("SubjectID"), HashMap.class).getResultList();
 
 			
-			Map<Float,Map<String, Object>> resultsMap=LambdaUtils.list2map2(results, x->(float)x.get("Score"));
+			Map<Float,Map<String, Object>> resultsMap=LambdaUtils.list2map(results, x->(float)x.get("Score"));
 			
 			
 			for(Map<String, Object> cr:computeResult){

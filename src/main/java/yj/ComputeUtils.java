@@ -200,7 +200,7 @@ public class ComputeUtils
 			double fullScore)
 	{
 
-		Map<Long, T> mapt = LambdaUtils.list2map2(objects, studentIDfunction);
+		Map<Long, T> mapt = LambdaUtils.list2map(objects, studentIDfunction);
 
 		List<Map<String, Object>> result = new ArrayList<>();
 		for (double score : segments.keySet())
