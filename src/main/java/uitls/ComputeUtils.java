@@ -76,7 +76,7 @@ public class ComputeUtils
 			segments.add(0d);
 		}
 		
-		Map<Double, Integer> map = LambdaUtils.groupby(objects, x -> Utils.key(segments, scoreExtractor.apply(x), false, false), Collectors.summingInt(countExtractor));
+		Map<Double, Integer> map = LambdaUtils.groupby(objects, x -> Tool.key(segments, scoreExtractor.apply(x), false, false), Collectors.summingInt(countExtractor));
 		Map<Double, Integer> result = new LinkedHashMap<>();
 		for (double key : segments)
 		{
@@ -113,7 +113,7 @@ public class ComputeUtils
 			segments.add(0d);
 		}
 
-		Map<Double, Integer> map = LambdaUtils.groupby(objects, x -> Utils.key(segments, scoreExtractor.apply(x), false, false), Collectors.summingInt(countExtractor));
+		Map<Double, Integer> map = LambdaUtils.groupby(objects, x -> Tool.key(segments, scoreExtractor.apply(x), false, false), Collectors.summingInt(countExtractor));
 		List<Map<String, Object>> list = new ArrayList<>();
 		for (int i = 0; i < segments.size(); i++)
 		{

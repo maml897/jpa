@@ -7,7 +7,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Utils {
+public class Tool {
 
 	/**
 	 * 返回values 中距离value 最近的值，可以上取，也可以下取 取高：低于最低分的都算作最低分；取低：高于最高分的都算作最高分
@@ -119,7 +119,7 @@ public class Utils {
 		}
 
 		Map<Double, List<Double>> map = LambdaUtils.groupby(list1, x -> {
-			Double r = Utils.key(list, x,false);
+			Double r = Tool.key(list, x,false);
 			return r;
 		});
 		

@@ -13,7 +13,7 @@ import javax.persistence.Query;
 
 import config.jpa.JpaUtils;
 import uitls.LambdaUtils;
-import uitls.Utils;
+import uitls.Tool;
 
 /**
  * 学科难度
@@ -68,7 +68,7 @@ public class ComputeDifficult {
 			double fullScore) {
 		
 		Map<Double, Double> map=LambdaUtils.groupby(objects, x->{
-			double result=Utils.key(segments, keyfunction.apply(x));
+			double result=Tool.key(segments, keyfunction.apply(x));
 			return result;
 		},Collectors.averagingDouble(averagefunction));
 		

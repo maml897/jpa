@@ -15,7 +15,7 @@ import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import uitls.LambdaUtils;
-import uitls.Utils;
+import uitls.Tool;
 
 
 public class ComputeUtils
@@ -284,7 +284,7 @@ public class ComputeUtils
 		
 		
 		Map<Double, List<Long>> map = LambdaUtils.groupby(scores, x -> {
-			double d = Utils.key(segments, scorefunction.apply(x));
+			double d = Tool.key(segments, scorefunction.apply(x));
 			return d;
 		}, Collectors.mapping(studentIDExtractor, Collectors.toList()));
 

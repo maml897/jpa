@@ -13,7 +13,7 @@ import javax.persistence.Query;
 
 import config.jpa.JpaUtils;
 import uitls.LambdaUtils;
-import uitls.Utils;
+import uitls.Tool;
 
 /**
  * 小题难度
@@ -102,7 +102,7 @@ public class ComputeDifficultQuestion {
 	 */
 	// 分数（相近）-学生IDs compute1使用
 	private static <T> Map<Double, List<Long>> scoreStudents(List<T> objects,Function<T,Double> keyfunction,Function<T,Long> studentIDfunction,List<Double> segments) {
-		Map<Double, List<Long>> map = LambdaUtils.groupby(objects, x -> Utils.key(segments, keyfunction.apply(x)), 
+		Map<Double, List<Long>> map = LambdaUtils.groupby(objects, x -> Tool.key(segments, keyfunction.apply(x)), 
 				Collectors.mapping(studentIDfunction, Collectors.toList()));
 		
 		Map<Double, List<Long>> result = new LinkedHashMap<>();
@@ -154,7 +154,7 @@ public class ComputeDifficultQuestion {
 	// 学生-分数（相近） compute2使用x -> (Long) x.get("NsStudentID");
 	public static <T> Map<Long, Double> studentScore(List<T> objects,Function<T,Long> keyFunction,Function<T,Double> valueFunction, List<Double> segments) {
 		Map<Long, Double> map = LambdaUtils.list2map(objects,keyFunction ,
-				x -> Utils.key(segments,valueFunction.apply(x)));
+				x -> Tool.key(segments,valueFunction.apply(x)));
 		return map;
 	}
 
