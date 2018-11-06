@@ -14,7 +14,7 @@
 			
 			<property name="hibernate.connection.url"
 				value="jdbc:mysql://172.16.0.129:3306/pingjuan?createDatabaseIfNotExist=true&amp;useUnicode=true&amp;characterEncoding=utf8" />
-			<property name="hibernate.hbm2ddl.auto" value="validate" />
+			<property name="hibernate.hbm2ddl.auto" value="update" />
 				
 				<!--  
 			<property name="hibernate.connection.url"
