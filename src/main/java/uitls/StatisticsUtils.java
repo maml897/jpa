@@ -4,7 +4,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.OptionalDouble;
 import java.util.PriorityQueue;
 
 import common.excel.PoiExcelReader;
@@ -21,11 +20,7 @@ public class StatisticsUtils {
 	 */
 	public static double variance(List<Double> list, double... averages) {
 		double average = (averages == null || averages.length == 0) ? average(list) : averages[0];
-		OptionalDouble optionalDouble=list.stream().mapToDouble(x -> Math.pow(x - average, 2)).average();
-		if(!optionalDouble.isPresent()){
-			return 0d;
-		}
-		return optionalDouble.getAsDouble();
+		return list.stream().mapToDouble(x -> Math.pow(x - average, 2)).average().orElse(0);
 	}
 
 	/**
@@ -184,11 +179,7 @@ public class StatisticsUtils {
 	 * @return
 	 */
 	public static double average(List<Double> list) {
-		OptionalDouble od=list.stream().mapToDouble(x -> x).average();
-		if(!od.isPresent()){
-			return 0d;
-		}
-		return od.getAsDouble();
+		return list.stream().mapToDouble(x -> x).average().orElse(0);
 	}
 
 	/**
@@ -209,11 +200,7 @@ public class StatisticsUtils {
 	 * @return
 	 */
 	public static double top(List<Double> list) {
-		OptionalDouble optionalDouble=list.stream().mapToDouble(x -> x).max();
-		if(!optionalDouble.isPresent()){
-			return 0;
-		}
-		return optionalDouble.getAsDouble();
+		return list.stream().mapToDouble(x -> x).max().orElse(0);
 	}
 
 	/**
@@ -223,11 +210,7 @@ public class StatisticsUtils {
 	 * @return
 	 */
 	public static double bottom(List<Double> list) {
-		OptionalDouble optionalDouble=list.stream().mapToDouble(x -> x).min();
-		if(!optionalDouble.isPresent()){
-			return 0;
-		}
-		return optionalDouble.getAsDouble();
+		return list.stream().mapToDouble(x -> x).min().orElse(0);
 	}
 	
 	public static void main(String[] args) throws Exception {
