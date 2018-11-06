@@ -153,7 +153,7 @@ public class ComputeDifficultQuestion {
 	 */
 	// 学生-分数（相近） compute2使用x -> (Long) x.get("NsStudentID");
 	public static <T> Map<Long, Double> studentScore(List<T> objects,Function<T,Long> keyFunction,Function<T,Double> valueFunction, List<Double> segments) {
-		Map<Long, Double> map = LambdaUtils.list2map2(objects,keyFunction ,
+		Map<Long, Double> map = LambdaUtils.list2map(objects,keyFunction ,
 				x -> Utils.key(segments,valueFunction.apply(x)));
 		return map;
 	}

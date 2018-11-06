@@ -30,7 +30,7 @@ public class QuestionDiscriminationTest {
 		List<Map<String,Object>> students = query1.getResultList();
 		
 		
-		Map<Long,Float> studentmap = LambdaUtils.list2map2(students, x->(long)x.get("ID"),  x->(float)x.get("YsScore"));
+		Map<Long,Float> studentmap = LambdaUtils.list2map(students, x->(long)x.get("ID"),  x->(float)x.get("YsScore"));
 		
 		Map<Long,Double> results= new LinkedHashMap<>();
 		
@@ -43,7 +43,7 @@ public class QuestionDiscriminationTest {
 			Query query = JpaUtils.createNativeQuery("select qs.NsStudentID,qs.Score from n_nsrquestionstudent qs where qs.NsrQuestionID=" + ID , HashMap.class);
 			List<Map<String,Object>> result = query.getResultList();
 			
-			Map<Long,Double> tmp = LambdaUtils.list2map2(result, x->(long)x.get("NsStudentID"),  x->(double)x.get("Score"));
+			Map<Long,Double> tmp = LambdaUtils.list2map(result, x->(long)x.get("NsStudentID"),  x->(double)x.get("Score"));
 			
 			List<Double> list = new ArrayList<>();
 			for(Map map0:students){

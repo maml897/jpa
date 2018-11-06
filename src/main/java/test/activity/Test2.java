@@ -21,7 +21,7 @@ public class Test2 {
 		List<Map<String, Object>> students = query.getResultList();
 		
 		
-		Map<Long,Integer> map= LambdaUtils.list2map2(students, x->(Long)x.get("ID"), x->{
+		Map<Long,Integer> map= LambdaUtils.list2map(students, x->(Long)x.get("ID"), x->{
 			float score =(float)x.get("Score");
 			if(score>=572){
 				return 1;

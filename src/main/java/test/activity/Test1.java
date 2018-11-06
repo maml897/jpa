@@ -22,7 +22,7 @@ public class Test1 {
 		
 		
 		List<Map<String,Object>> orders = ComputeScore.compute(students, x->(float)x.get("Score"));
-		Map<Float,Map<String,Object>> ordersMap= LambdaUtils.list2map2(orders, x->(float)x.get("score"));
+		Map<Float,Map<String,Object>> ordersMap= LambdaUtils.list2map(orders, x->(float)x.get("score"));
 		
 		for(Map<String, Object> student:students){
 			long id = (long)student.get("ID");
