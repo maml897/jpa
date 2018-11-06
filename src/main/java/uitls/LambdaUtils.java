@@ -13,13 +13,13 @@ import java.util.stream.Collectors;
 public class LambdaUtils
 {
 	// list 转 map，指定一个属性当key，value默认U
-	public static <T, U> Map<T, U> list2map2(List<U> list, Function<U, T> key)
+	public static <T, U> Map<T, U> list2map(List<U> list, Function<U, T> key)
 	{
-		return list2map2(list, key, x -> x);
+		return list2map(list, key, x -> x);
 	}
 
 	// list 转 map，指定一个属性当key，执行一个属性当value
-	public static <U, T, K> Map<T, K> list2map2(List<U> list, Function<U, T> key, Function<U, K> value)
+	public static <U, T, K> Map<T, K> list2map(List<U> list, Function<U, T> key, Function<U, K> value)
 	{
 		return list.stream().collect(Collectors.toMap(key, value, (key1, key2) -> key2, LinkedHashMap::new));
 	}
@@ -28,12 +28,6 @@ public class LambdaUtils
 	public static <U, T> List<T> list2list(Collection<U> list, Function<U, T> fun)
 	{
 		return list.stream().map(fun).collect(Collectors.toList());
-	}
-
-	// 任意属性排序
-	public static <T, U> void order(List<T> list, Comparator<U> c, Function<T, U> keyExtractor)
-	{
-		list.sort(Comparator.comparing(keyExtractor, c));
 	}
 
 	// 过滤
@@ -62,7 +56,6 @@ public class LambdaUtils
 	{
 		return list.stream().collect(Collectors.groupingBy(groupExtractor, LinkedHashMap::new, Collectors.groupingBy(keyExtractor, LinkedHashMap::new, Collectors.toList())));
 	}
-	
 	
 	public static <T> Map<Boolean, List<T>> groupbyboolean(List<T> list, Predicate<T> keyExtractor)
 	{
