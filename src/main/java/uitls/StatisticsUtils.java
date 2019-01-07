@@ -2,7 +2,6 @@ package uitls;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.PriorityQueue;
 import java.util.function.Predicate;
@@ -23,6 +22,7 @@ public class StatisticsUtils {
 		double average = (averages == null || averages.length == 0) ? average(list) : averages[0];
 		return list.stream().mapToDouble(x -> Math.pow(x - average, 2)).average().orElse(0);
 	}
+	
 
 	/**
 	 * 标准差
@@ -214,9 +214,4 @@ public class StatisticsUtils {
 		return list.stream().mapToDouble(x -> x).min().orElse(0);
 	}
 	
-	public static void main(String[] args) throws Exception {
-		List<Double> list =Arrays.asList();
-		
-		System.out.println(variance(list));
-	}
 }

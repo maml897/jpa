@@ -61,17 +61,4 @@ public class LambdaUtils
 	{
 		return list.stream().collect(Collectors.partitioningBy(keyExtractor));
 	}
-	
-	//计算平均分
-	public static double average(List<Double> list) {
-		return list.stream().mapToDouble(x -> x).average().orElse(0);
-	}
-	
-	//最大值
-	
-	//最小值
-	
-	//count
-	
-	//sum
 }
