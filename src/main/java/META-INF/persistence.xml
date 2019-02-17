@@ -8,22 +8,23 @@
 		<properties>
 			<property name="hibernate.dialect" value="org.hibernate.dialect.MySQL5Dialect" />
 			<property name="hibernate.connection.driver_class" value="com.mysql.jdbc.Driver" />
-			<property name="hibernate.connection.username" value="root" />
-			<property name="hibernate.connection.password" value="mysql" />
-			
-			
-			<property name="hibernate.connection.url"
-				value="jdbc:mysql://172.16.0.129:3306/pingjuan?createDatabaseIfNotExist=true&amp;useUnicode=true&amp;characterEncoding=utf8" />
-			<property name="hibernate.hbm2ddl.auto" value="update" />
-				
-				<!--  
-			<property name="hibernate.connection.url"
-				value="jdbc:mysql://172.16.0.129:3306/ytw?createDatabaseIfNotExist=true&amp;useUnicode=true&amp;characterEncoding=utf8" />
-			<property name="hibernate.hbm2ddl.auto" value="validate" />
-			 -->
 			<property name="hibernate.show_sql" value="false"/>
 			<property name="hibernate.max_fetch_depth" value="3" />
 			
+			
+			
+			<property name="hibernate.connection.url"
+				value="jdbc:mysql://172.16.0.129:3306/ytw?createDatabaseIfNotExist=true&amp;useUnicode=true&amp;characterEncoding=utf8" />
+			<property name="hibernate.hbm2ddl.auto" value="validate" />
+			<property name="hibernate.connection.username" value="root" />
+			<property name="hibernate.connection.password" value="mysql" />
+			 <!-- 
+			<property name="hibernate.connection.url"
+				value="jdbc:mysql://rm-2zewfm90i6b63ql1irw.mysql.rds.aliyuncs.com:3306/ytw?createDatabaseIfNotExist=true&amp;useUnicode=true&amp;characterEncoding=utf8" />
+			<property name="hibernate.hbm2ddl.auto" value="validate" />
+			<property name="hibernate.connection.username" value="ytw" />
+			<property name="hibernate.connection.password" value="jlhhjy@2014" />
+			  -->
 		</properties>
 		
 	</persistence-unit>
