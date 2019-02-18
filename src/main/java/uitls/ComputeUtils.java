@@ -3,14 +3,16 @@ package uitls;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.ToDoubleFunction;
 import java.util.function.ToIntFunction;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 public class ComputeUtils
@@ -24,6 +26,7 @@ public class ComputeUtils
 	 */
 	public static <T> List<Map<String, Object>> computeScore(List<T> scores, Function<T, Double> function)
 	{
+		scores.sort(Comparator.comparingDouble(x->function.apply(x)));
 		Map<Double, Long> group = LambdaUtils.groupby(scores, function, Collectors.counting());
 		List<Map<String, Object>> result = new ArrayList<Map<String, Object>>();
 
@@ -31,6 +34,9 @@ public class ComputeUtils
 		int lastCount = 0;
 		int lastSum = 0;
 
+		group.entrySet().stream().sorted(Entry.<Double,Long>comparingByKey().reversed());
+		
+		//需要一个排序
 		for (double score : group.keySet())
 		{
 
@@ -41,8 +47,8 @@ public class ComputeUtils
 			int count = Integer.parseInt(String.valueOf(group.get(score)));
 
 			map.put("score", score);
-			map.put("order", order);
 			map.put("count", count);
+			map.put("order", order);
 			map.put("sum", sum);
 			result.add(map);
 
@@ -54,74 +60,37 @@ public class ComputeUtils
 		return result;
 	}
 
+	
 	/**
-	 * 分数段人数统计 ** 此处要求step 从大到小排列**
-	 * @param segments
-	 *            分数段
-	 * @param fullscore
-	 *            满分
+	 * 计算分数段，可以是学生列表也可以是score列表
+	 * @param top
+	 * @param bottom
+	 * @param step
 	 * @param objects
-	 *            待计算实体
 	 * @param scoreExtractor
-	 *            分数属性
-	 * @param countExtractor
-	 *            数量属性
+	 * @param c
+	 * @param withSums
 	 * @return
 	 */
-	public static <T> Map<Double, ?> computeSegments(double top,double bottom,int step,List<T> objects, Function<T, Double> scoreExtractor, ToIntFunction<T> countExtractor, boolean... withSums)
+	public static <T, U> List<Map<String, Object>> computeSegments(double top, double bottom, int step, List<T> objects, Function<T, Double> scoreExtractor, Collector<T, ?, ?> c, boolean... withSums)
 	{
-		List<Double> segments = getSegments(top, bottom, step);
+		List<Double> temp = getSegments(top, bottom, step);
+		List<Double> segments = new ArrayList<>(temp);
 		if (!segments.contains(0d))
 		{
 			segments.add(0d);
 		}
-		
-		Map<Double, Integer> map = LambdaUtils.groupby(objects, x -> Tool.key(segments, scoreExtractor.apply(x), false, false), Collectors.summingInt(countExtractor));
-		Map<Double, Integer> result = new LinkedHashMap<>();
-		for (double key : segments)
-		{
-			if (map.containsKey(key))
-			{
-				result.put(key, map.get(key));
-			}
-			else
-			{
-				result.put(key, 0);
-			}
-		}
-
-		if (withSums != null && withSums.length > 0 && withSums[0])
-		{
-			Map<Double, List<Integer>> resultWithSum = new LinkedHashMap<>();
-			int sum = 0;// 累计
-			for (double key : result.keySet())
-			{
-				int number = result.get(key);
-				sum += number;
-				resultWithSum.put(key, Arrays.asList(number, sum));
-			}
-			return resultWithSum;
-		}
-		return result;
-	}
-
-	public static <T, U> List<Map<String, Object>> computeSegmentss(double top,double bottom,int step,List<T> objects, Function<T, Double> scoreExtractor, ToIntFunction<T> countExtractor, boolean... withSums)
-	{
-		List<Double> segments = getSegments(top, bottom, step);
-		if (!segments.contains(0d))
-		{
-			segments.add(0d);
-		}
-
-		Map<Double, Integer> map = LambdaUtils.groupby(objects, x -> Tool.key(segments, scoreExtractor.apply(x), false, false), Collectors.summingInt(countExtractor));
+		Map<Double, ?> map = LambdaUtils.groupby(objects, x -> Tool.key(segments, scoreExtractor.apply(x), false, false), c);
 		List<Map<String, Object>> list = new ArrayList<>();
 		for (int i = 0; i < segments.size(); i++)
 		{
 			double key = segments.get(i);
-			Integer count = map.get(key);
-			if (count == null)
+
+			Integer count = 0;
+			Object o = map.get(key);
+			if (o != null)
 			{
-				count = 0;
+				count = Integer.parseInt(o.toString());
 			}
 
 			Map<String, Object> onemap = new HashMap<>();
@@ -130,11 +99,11 @@ public class ComputeUtils
 
 			if (i == 0)
 			{
-				onemap.put("desc", "[" + key + ",)");
+				onemap.put("desc", Tool.formatDouble(key) + "及以上");
 			}
 			else
 			{
-				onemap.put("desc", "[" + key + "," + segments.get(i - 1) + ")");
+				onemap.put("desc", "[" + Tool.formatDouble(key) + "," + Tool.formatDouble(segments.get(i - 1)) + ")");
 			}
 			list.add(onemap);
 		}
@@ -153,6 +122,23 @@ public class ComputeUtils
 		return list;
 	}
 
+	/**
+	 * 计算分数段，需要基础表 score
+	 * @param top
+	 * @param bottom
+	 * @param step
+	 * @param objects
+	 * @param scoreExtractor
+	 * @param countExtractor
+	 * @param withSums
+	 * @return
+	 */
+	public static <T, U> List<Map<String, Object>> computeSegments(double top, double bottom, int step, List<T> objects, Function<T, Double> scoreExtractor, ToIntFunction<T> countExtractor,
+			boolean... withSums)
+	{
+		List<Map<String, Object>> list = computeSegments(top, bottom, step, objects, scoreExtractor, Collectors.summingInt(countExtractor), withSums);
+		return list;
+	}
 	/**
 	 * 获取分段
 	 * @param from

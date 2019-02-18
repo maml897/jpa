@@ -104,7 +104,18 @@ public class Tool {
 		return result;
 	}
 	
-	
+	public static String formatDouble(double f)
+	{
+		int i = (int) f;
+		if (i == f)
+		{
+			return i + "";
+		}
+		else
+		{
+			return f + "";
+		}
+	}
 
 	public static void main(String[] args) {
 		List<Double> list = new ArrayList<>();
