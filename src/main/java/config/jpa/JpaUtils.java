@@ -26,6 +26,19 @@ public class JpaUtils
 
 		return query;
 	}
+	
+//	public static Query createNativeQuery(String sqlString, Class<?> cls, String... infos)
+//	{
+//		Map<String,String> map =new HashMap<>();
+//		map.put("hibernate.connection.url", "jdbc:mysql://"+infos[0]+"?createDatabaseIfNotExist=true&amp;useUnicode=true&amp;characterEncoding=utf8");
+//		if(infos.length>1){
+//			map.put("hibernate.connection.username", infos[1]);
+//		}
+//		if(infos.length>2){
+//			map.put("hibernate.connection.password", infos[2]);
+//		}
+//		return createNativeQuery(sqlString, cls, map);
+//	}
 
 	public static Query createNativeQuery(String sqlString, Map<String,String>... datasource)
 	{
@@ -34,7 +47,7 @@ public class JpaUtils
 		return query;
 	}
 
-	public static EntityManager getEm(Map<String,String>... datasource)
+	private static EntityManager getEm(Map<String,String>... datasource)
 	{
 		if (em == null)
 		{
@@ -52,7 +65,7 @@ public class JpaUtils
 		return em;
 	}
 
-	public static EntityManagerFactory getEntityManagerFactory(Map<String, String> map)
+	private static EntityManagerFactory getEntityManagerFactory(Map<String, String> map)
 	{
 		map.put("hibernate.dialect", "org.hibernate.dialect.MySQL5Dialect");
 		map.put("hibernate.connection.driver_class", "com.mysql.jdbc.Driver");

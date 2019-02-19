@@ -2,50 +2,51 @@ package uitls;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.PriorityQueue;
 import java.util.function.Predicate;
 
 import common.excel.PoiExcelReader;
 
-public class StatisticsUtils {
+public class StatisticsUtils
+{
 
 	/**
 	 * 方差
-	 * 
-	 * @param list
+	 * @param list 无需排序
 	 * @param averages
 	 *            平均分，可以不传，不传的话就自动计算
 	 * @return
 	 */
-	public static double variance(List<Double> list, double... averages) {
+	public static double variance(Collection<Double> list, double... averages)
+	{
 		double average = (averages == null || averages.length == 0) ? average(list) : averages[0];
 		return list.stream().mapToDouble(x -> Math.pow(x - average, 2)).average().orElse(0);
 	}
-	
 
 	/**
 	 * 标准差
-	 * 
-	 * @param list
+	 * @param list 无需排序
 	 * @param averages
 	 *            平均分，可以不传，不传的话就自动计算
 	 * @return
 	 */
-	public static double stand(List<Double> list, double... averages) {
+	public static double stand(List<Double> list, double... averages)
+	{
 		double variance = variance(list, averages);
 		return variance > 0 ? Math.sqrt(variance) : 0;
 	}
 
 	/**
 	 * 区分度
-	 * 
 	 * @param list
 	 *            排好序的,按照单科分数排序，分数相同按照examCode
 	 * @param fullScore
 	 * @return
 	 */
-	public static double discrimination(List<Double> list, double fullScore) {
+	public static double discrimination(List<Double> list, double fullScore)
+	{
 		int statisticNum = list.size();
 
 		int hnum = statisticNum * 27 / 100;
@@ -58,10 +59,9 @@ public class StatisticsUtils {
 		double laverage = average(llist);
 		return (haverage - laverage) / fullScore;
 	}
-	
+
 	/**
 	 * 信度
-	 * 
 	 * @param questionCount
 	 *            问题数量
 	 * @param scores
@@ -75,8 +75,8 @@ public class StatisticsUtils {
 	 * @return
 	 * @throws Exception
 	 */
-	public static double reliability(int questionCount, List<Double> scores, List<Double> oddScores,
-			List<Double> evenScores, double variance) throws Exception {
+	public static double reliability(int questionCount, List<Double> scores, List<Double> oddScores, List<Double> evenScores, double variance) throws Exception
+	{
 
 		double oddAvg = average(oddScores);
 		double oddVariance = variance(oddScores, oddAvg);
@@ -87,27 +87,33 @@ public class StatisticsUtils {
 		int y = questionCount / 2;
 		int x = questionCount - y;
 
-		if (x <= 50 && y <= 50) {
-			PoiExcelReader excelReader = new PoiExcelReader(
-					new File(StatisticsUtils.class.getResource("f_value.xls").getPath()));
+		if (x <= 50 && y <= 50)
+		{
+			PoiExcelReader excelReader = new PoiExcelReader(new File(StatisticsUtils.class.getResource("f_value.xls").getPath()));
 			excelReader.selSheet(0);
 
 			double f = 0;
 			double f_s = 0;
 
-			if (oddVariance > evenVariance) {
+			if (oddVariance > evenVariance)
+			{
 				f = oddVariance / evenVariance;
 				f_s = Double.parseDouble(excelReader.getOneCell(x - 1, y - 1, false));
-			} else {
+			}
+			else
+			{
 				f = evenVariance / oddVariance;
 				f_s = Double.parseDouble(excelReader.getOneCell(y - 1, x - 1, false));
 			}
 
-			if (f <= f_s) {
+			if (f <= f_s)
+			{
 				double rAvg = 0;
-				if (scores.size() > 0) {
+				if (scores.size() > 0)
+				{
 					double total = 0;
-					for (int i = 0; i < oddScores.size(); i++) {
+					for (int i = 0; i < oddScores.size(); i++)
+					{
 						total = total + oddScores.get(i) * evenScores.get(i);
 					}
 					rAvg = total / scores.size();
@@ -119,34 +125,41 @@ public class StatisticsUtils {
 
 		double dvariance = 0d;
 		List<Double> list = new ArrayList<>();
-		if (scores.size() > 0) {
-			for (int i = 0; i < oddScores.size(); i++) {
+		if (scores.size() > 0)
+		{
+			for (int i = 0; i < oddScores.size(); i++)
+			{
 				list.add(Math.abs(oddScores.get(i) - evenScores.get(i)));
 			}
 			dvariance = variance(list);
 		}
 		return 1 - dvariance / variance;
 	}
-	
+
 	/**
 	 * 中位数
-	 * 
 	 * @param list
 	 * @param orderd
 	 *            列表是否已经进行了排序，如果没有需要false
 	 * @return
 	 */
-	public static double median(List<Double> list, boolean... orderd) {
-		if (list.size() == 0) {
+	public static double median(List<Double> list, boolean... orderd)
+	{
+		if (list.size() == 0)
+		{
 			return 0;
 		}
-		if (orderd == null || orderd.length == 0 || orderd[0]) {
+		if (orderd == null || orderd.length == 0 || orderd[0])
+		{
 			int number = list.size();
 			double median = 0f;
 			int x = number / 2;
-			if (number % 2 == 0) {
+			if (number % 2 == 0)
+			{
 				return (list.get(x - 1) + list.get(x)) / 2;
-			} else {
+			}
+			else
+			{
 				median = list.get(x);
 			}
 			return median;
@@ -155,63 +168,69 @@ public class StatisticsUtils {
 		// 无序列表快速得到中位数https://www.cnblogs.com/shizhh/p/5746151.html
 		int heapSize = list.size() / 2 + 1;
 		PriorityQueue<Double> heap = new PriorityQueue<>(heapSize);
-		for (int i = 0; i < heapSize; i++) {
+		for (int i = 0; i < heapSize; i++)
+		{
 			heap.add(list.get(i));
 		}
 
-		for (int i = heapSize; i < list.size(); i++) {
-			if (heap.peek() < list.get(i)) {
+		for (int i = heapSize; i < list.size(); i++)
+		{
+			if (heap.peek() < list.get(i))
+			{
 				heap.poll();
 				heap.add(list.get(i));
 			}
 		}
-		
-		if (list.size() % 2 == 1) {
+
+		if (list.size() % 2 == 1)
+		{
 			return (double) heap.peek();
-		} else {
+		}
+		else
+		{
 			return (double) (heap.poll() + heap.peek()) / 2.0;
 		}
 	}
 
 	/**
 	 * 平均分
-	 * 
 	 * @param list
 	 * @return
 	 */
-	public static double average(List<Double> list) {
+	public static double average(Collection<Double> list)
+	{
 		return list.stream().mapToDouble(x -> x).average().orElse(0);
 	}
 
 	/**
 	 * 满分人数
-	 * 
 	 * @param list
 	 * @return
 	 */
-	public static <T> int count(List<T> list,Predicate<T> predicate) {
-		int count = (int)list.stream().filter(predicate).count();
+	public static <T> int count(Collection<T> list, Predicate<T> predicate)
+	{
+		int count = (int) list.stream().filter(predicate).count();
 		return count;
 	}
 
 	/**
 	 * 最高分
-	 * 
 	 * @param list
 	 * @return
 	 */
-	public static double max(List<Double> list) {
+	public static double max(Collection<Double> list)
+	{
 		return list.stream().mapToDouble(x -> x).max().orElse(0);
 	}
 
 	/**
 	 * 最低分
-	 * 
 	 * @param list
 	 * @return
 	 */
-	public static double min(List<Double> list) {
+	public static double min(Collection<Double> list)
+	{
 		return list.stream().mapToDouble(x -> x).min().orElse(0);
 	}
-	
+
 }

@@ -27,9 +27,9 @@ public class SubjectTopAndBottomAndFullTest {
 		
 		
 		long s = System.currentTimeMillis();
-		System.out.println(StatisticsUtils.top(list));
-		System.out.println(StatisticsUtils.bottom(list));
-		System.out.println(StatisticsUtils.full(list,136));
+//		System.out.println(StatisticsUtils.top(list));
+//		System.out.println(StatisticsUtils.bottom(list));
+//		System.out.println(StatisticsUtils.full(list,136));
 		
 		System.out.println(System.currentTimeMillis()-s);
 		

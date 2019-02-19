@@ -15,30 +15,30 @@ public class Test1 {
 	//排名验证
 	public static void main(String[] args) {
 		
-		Query query = JpaUtils.createNativeQuery(
-				"select nss.ID,nss.Score from n_nsstudent nss where nsID=2655 order by Score desc",
-				LinkedHashMap.class);
-		List<Map<String, Object>> students = query.getResultList();
-		
-		
-		List<Map<String,Object>> orders = ComputeScore.compute(students, x->(float)x.get("Score"));
-		Map<Float,Map<String,Object>> ordersMap= LambdaUtils.list2map(orders, x->(float)x.get("score"));
-		
-		for(Map<String, Object> student:students){
-			long id = (long)student.get("ID");
-			float score = (float)student.get("Score");
-			
-			int order = (int)ordersMap.get(score).get("order");
-			int forder = getTotalOrderByScore(2655, score);
-			if(order==forder){
-				System.out.println(id+"=="+score+"==="+order+"=="+forder);
-			}
-			else{
-				System.out.println("--------------");
-			}
-		}
-		
-		System.out.println("okok");
+//		Query query = JpaUtils.createNativeQuery(
+//				"select nss.ID,nss.Score from n_nsstudent nss where nsID=2655 order by Score desc",
+//				LinkedHashMap.class);
+//		List<Map<String, Object>> students = query.getResultList();
+//		
+//		
+//		List<Map<String,Object>> orders = ComputeScore.compute(students, x->(float)x.get("Score"));
+//		Map<Float,Map<String,Object>> ordersMap= LambdaUtils.list2map(orders, x->(float)x.get("score"));
+//		
+//		for(Map<String, Object> student:students){
+//			long id = (long)student.get("ID");
+//			float score = (float)student.get("Score");
+//			
+//			int order = (int)ordersMap.get(score).get("order");
+//			int forder = getTotalOrderByScore(2655, score);
+//			if(order==forder){
+//				System.out.println(id+"=="+score+"==="+order+"=="+forder);
+//			}
+//			else{
+//				System.out.println("--------------");
+//			}
+//		}
+//		
+//		System.out.println("okok");
 	}
 
 	

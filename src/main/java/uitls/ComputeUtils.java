@@ -121,24 +121,7 @@ public class ComputeUtils
 		}
 		return list;
 	}
-
-	/**
-	 * 计算分数段，需要基础表 score
-	 * @param top
-	 * @param bottom
-	 * @param step
-	 * @param objects
-	 * @param scoreExtractor
-	 * @param countExtractor
-	 * @param withSums
-	 * @return
-	 */
-	public static <T, U> List<Map<String, Object>> computeSegments(double top, double bottom, int step, List<T> objects, Function<T, Double> scoreExtractor, ToIntFunction<T> countExtractor,
-			boolean... withSums)
-	{
-		List<Map<String, Object>> list = computeSegments(top, bottom, step, objects, scoreExtractor, Collectors.summingInt(countExtractor), withSums);
-		return list;
-	}
+	
 	/**
 	 * 获取分段
 	 * @param from
@@ -207,78 +190,6 @@ public class ComputeUtils
 		}
 
 		return list;
-	}
-
-	/**
-	 * 获取segement的名字，例如[10,30)等 如果只有一个元素，返回 以上，以及下 两个
-	 * @param segments
-	 * @descs 默认segments从高到低排序，如果是从低到高排序需要传false
-	 * @return
-	 */
-	public static List<String> getSegmentNames(List<Double> segments, double down, boolean... descs)
-	{
-		// segments如果包含0，需要判断这个0是自动生成的，还是用户输入的
-
-		boolean desc = true;// 默认从高到底排序
-		if (descs != null && descs.length > 0 && !descs[0])
-		{
-			desc = false;
-		}
-
-		long size = segments.size();
-		List<String> segmentNames = new ArrayList<>();
-
-		if (desc)
-		{
-			double prev = -1d;
-			for (int i = 0; i < segments.size(); i++)
-			{
-				double value = segments.get(i);
-
-				// 第一个元素
-				if (i == 0)
-				{
-					segmentNames.add(value + "及以上");
-					prev = value;
-					continue;
-				}
-
-				if (i != size - 1)
-				{
-					segmentNames.add("[" + value + "," + prev + ")");
-					prev = value;
-					continue;
-				}
-
-				// 最后一个元素
-				if (i == size - 1)
-				{
-					if (value != 0)
-					{
-						segmentNames.add("[" + value + "," + prev + ")");
-						segmentNames.add(value + "以下");
-					}
-					else
-					{
-						if (down == 0d)
-						{
-							segmentNames.add("[" + value + "," + prev + ")");
-						}
-						else
-						{
-							segmentNames.add(prev + "以下");
-						}
-					}
-				}
-			}
-		}
-		else
-		{
-			Collections.reverse(segments);
-			segmentNames = getSegmentNames(segments, down);
-			Collections.reverse(segmentNames);
-		}
-		return segmentNames;
 	}
 
 	@SuppressWarnings("unchecked")

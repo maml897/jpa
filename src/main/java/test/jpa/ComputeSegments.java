@@ -39,10 +39,10 @@ public class ComputeSegments {
 		System.out.println(System.currentTimeMillis()-s);
 		
 		
-		s = System.currentTimeMillis();
-		List<Map<String,Object>> list=ComputeUtils.computeSegmentss(100, 0, 1,result, x->Double.parseDouble(x.get("Score").toString()), x->(Integer)x.get("CCount"), true);
-		
-		System.out.println(list);
+//		s = System.currentTimeMillis();
+//		List<Map<String,Object>> list=ComputeUtils.computeSegmentss(100, 0, 1,result, x->Double.parseDouble(x.get("Score").toString()), x->(Integer)x.get("CCount"), true);
+//		
+//		System.out.println(list);
 		System.out.println(System.currentTimeMillis()-s);
 	}
 }
