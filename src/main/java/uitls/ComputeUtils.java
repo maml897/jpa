@@ -26,17 +26,14 @@ public class ComputeUtils
 	 */
 	public static <T> List<Map<String, Object>> computeScore(List<T> scores, Function<T, Double> function)
 	{
-		scores.sort(Comparator.comparingDouble(x->function.apply(x)));
+		scores.sort(Comparator.comparingDouble(x->function.apply(x)));//需要一个排序
 		Map<Double, Long> group = LambdaUtils.groupby(scores, function, Collectors.counting());
 		List<Map<String, Object>> result = new ArrayList<Map<String, Object>>();
 
 		int lastOrder = 1;
 		int lastCount = 0;
 		int lastSum = 0;
-
-		group.entrySet().stream().sorted(Entry.<Double,Long>comparingByKey().reversed());
 		
-		//需要一个排序
 		for (double score : group.keySet())
 		{
 
