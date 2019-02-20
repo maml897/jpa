@@ -47,7 +47,7 @@ public class JpaUtils
 		return query;
 	}
 
-	private static EntityManager getEm(Map<String,String>... datasource)
+	public static EntityManager getEm(Map<String,String>... datasource)
 	{
 		if (em == null)
 		{

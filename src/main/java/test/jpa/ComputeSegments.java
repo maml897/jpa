@@ -26,7 +26,7 @@ public class ComputeSegments {
 		
 		List<Map<String,Object>> result = query2.getResultList();
 
-		List<Double> steps =ComputeUtils.getSegments(100, 0, 1, true);
+//		List<Double> steps =ComputeUtils.getSegments(100, 0, 1, true);
 	
 		
 		long s = System.currentTimeMillis();
