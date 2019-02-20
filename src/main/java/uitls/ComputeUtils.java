@@ -2,12 +2,11 @@ package uitls;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.ToDoubleFunction;
@@ -26,14 +25,14 @@ public class ComputeUtils
 	 */
 	public static <T> List<Map<String, Object>> computeScore(List<T> scores, Function<T, Double> function)
 	{
-		scores.sort(Comparator.comparingDouble(x->function.apply(x)));//需要一个排序
+		scores.sort(Comparator.comparingDouble(x -> function.apply(x)));// 需要一个排序
 		Map<Double, Long> group = LambdaUtils.groupby(scores, function, Collectors.counting());
 		List<Map<String, Object>> result = new ArrayList<Map<String, Object>>();
 
 		int lastOrder = 1;
 		int lastCount = 0;
 		int lastSum = 0;
-		
+
 		for (double score : group.keySet())
 		{
 
@@ -57,7 +56,31 @@ public class ComputeUtils
 		return result;
 	}
 
-	
+	/**
+	 * 获取每个分数段有多少人
+	 * @param segments
+	 *            从低到高排序
+	 * @param objects
+	 * @param scoreExtractor
+	 * @return
+	 */
+	public static <T> Map<Double, List<T>> computeSegments(List<Double> segments, List<T> objects, Function<T, Double> scoreExtractor)
+	{
+		Map<Double, List<T>> map = LambdaUtils.groupby(objects, x -> Tool.key(segments, scoreExtractor.apply(x), true, true));
+		Map<Double, List<T>> result = new LinkedHashMap<>();
+		segments.forEach(x -> {
+			if (map.containsKey(x))
+			{
+				result.put(x, map.get(x));
+			}
+			else
+			{
+				result.put(x, new ArrayList<>());
+			}
+		});
+		return result;
+	}
+
 	/**
 	 * 计算分数段，可以是学生列表也可以是score列表
 	 * @param top
@@ -118,7 +141,7 @@ public class ComputeUtils
 		}
 		return list;
 	}
-	
+
 	/**
 	 * 获取分段
 	 * @param from
@@ -168,14 +191,14 @@ public class ComputeUtils
 	}
 
 	@SuppressWarnings("unchecked")
-	public static <T> List<Map<String, Object>> difficulty(List<T> nsrQuestions,Function<T,Double> difficultyfun,ToDoubleFunction<T> scorefun,ToIntFunction<T> typefun)
+	public static <T> List<Map<String, Object>> difficulty(List<T> nsrQuestions, Function<T, Double> difficultyfun, ToDoubleFunction<T> scorefun, ToIntFunction<T> typefun)
 	{
 		List<Map<String, Object>> list = new ArrayList<>();
 		Map<String, Object> map1 = new HashMap<>();
 		map1.put("name", "难题");
 		map1.put("info", "p≤0.4");
-		
-		Predicate<T> predicate1 = x->difficultyfun.apply(x)<=0.4;
+
+		Predicate<T> predicate1 = x -> difficultyfun.apply(x) <= 0.4;
 		map1.put("predicate", predicate1);
 
 		Map<String, Object> map2 = new HashMap<>();
@@ -204,15 +227,15 @@ public class ComputeUtils
 			}
 			map.put("score", questions.stream().mapToDouble(scorefun).sum());
 			map.put("list", questions);
-			//map.put("map", LambdaUtils.groupby(questions, x -> x.getType() == BaseConstants.QUESTION_TYPE_OBJECTIVE));
+			// map.put("map", LambdaUtils.groupby(questions, x -> x.getType() == BaseConstants.QUESTION_TYPE_OBJECTIVE));
 			map.put("map", LambdaUtils.groupbyboolean(questions, x -> typefun.applyAsInt(x) == 1));
 		}
 		return list;
 	}
-	
+
 	// 小题区分度分析
 	@SuppressWarnings("unchecked")
-	public static <T> List<Map<String, Object>> discrimination(List<T> nsrQuestions,Function<T,Double> fun,ToDoubleFunction<T> scorefun,ToIntFunction<T> typefun)
+	public static <T> List<Map<String, Object>> discrimination(List<T> nsrQuestions, Function<T, Double> fun, ToDoubleFunction<T> scorefun, ToIntFunction<T> typefun)
 	{
 		List<Map<String, Object>> list = new ArrayList<>();
 		Map<String, Object> map1 = new HashMap<>();
@@ -260,4 +283,49 @@ public class ComputeUtils
 		return list;
 	}
 
+	/**
+	 * 计算科目和小题的难度指数
+	 * @param segments
+	 *            分数段->人数IDs （总分或者科目的）
+	 * @param scoreUsers
+	 *            用户ID-分数（科目或者小题）
+	 * @param fullScore
+	 *            满分
+	 * @return
+	 */
+	public static <T> List<Map<String, Object>> computeDifficulty(Map<Double, List<Long>> scoreUsers, Map<Long, Double> userScore, double fullScore)
+	{
+		List<Map<String, Object>> result = new ArrayList<>();
+		for (double score : scoreUsers.keySet())
+		{
+			Map<String, Object> map = new LinkedHashMap<>();
+			map.put("Score", score);
+			if (fullScore == 0)
+			{
+				map.put("DifficultyIndex", 0);
+			}
+			else
+			{
+				List<Long> studentIDs = scoreUsers.get(score);
+				if (studentIDs.size() > 0)
+				{
+					double average = studentIDs.stream().mapToDouble(x -> {
+						Double d = userScore.get(x);
+						if (d == null)
+						{
+							return 0;
+						}
+						return d;
+					}).average().orElse(0d);
+					map.put("DifficultyIndex", average / fullScore);
+				}
+				else
+				{
+					map.put("DifficultyIndex", 0d);
+				}
+			}
+			result.add(map);
+		}
+		return result;
+	}
 }

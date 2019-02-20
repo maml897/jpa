@@ -11,46 +11,6 @@ public class Tool
 {
 
 	/**
-	 * 查找最接近目标值的数，并返回
-	 * @param array
-	 * @param targetNum
-	 * @return
-	 */
-	public static Double binarysearchKey(List<Double> values, double targetNum)
-	{
-		// Arrays.sort(array);
-		int targetindex = 0;
-		int left = 0, right = 0;
-		for (right = values.size() - 1; left != right;)
-		{
-			int midIndex = (right + left) / 2;
-			int mid = (right - left);
-
-			double midValue = values.get(midIndex);
-			if (targetNum == midValue)
-			{
-				return midValue;
-			}
-
-			if (targetNum > midValue)
-			{
-				left = midIndex;
-			}
-			else
-			{
-				right = midIndex;
-			}
-
-			if (mid <= 2)
-			{
-				break;
-			}
-		}
-		// System.out.println("和要查找的数：" + targetNum + "最接近的数：" + array[targetindex]);
-		return (values.get(right) - values.get(left)) / 2 > targetNum ? values.get(right) : values.get(left);
-	}
-
-	/**
 	 * 返回values 中距离value 最近的值，可以上取，也可以下取 取高：低于最低分的都算作最低分；取低：高于最高分的都算作最高分
 	 * @param value：
 	 * @param values：排好序的value，从小到大
