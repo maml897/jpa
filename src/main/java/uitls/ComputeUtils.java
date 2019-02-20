@@ -131,21 +131,11 @@ public class ComputeUtils
 	 *            是否加0，默认不加
 	 * @return
 	 */
-	public static List<Double> getSegments(double from, double to, int step, boolean... addZeros)
+	public static List<Double> getSegments(double from, double to, int step)
 	{
-
-		boolean addzreo = false;
-		if (addZeros != null && addZeros.length > 0)
-		{
-			addzreo = addZeros[0];
-		}
 
 		if (from == to)
 		{
-			if (addzreo && from != 0)
-			{
-				return Arrays.asList(from, 0d);
-			}
 			return Arrays.asList(from);
 		}
 
@@ -161,12 +151,6 @@ public class ComputeUtils
 			{
 				list.add(to);
 			}
-
-			if (addzreo && !list.contains(0d))
-			{
-				list.add(0d);
-			}
-
 		}
 		else
 		{
@@ -179,13 +163,7 @@ public class ComputeUtils
 			{
 				list.add(to);
 			}
-
-			if (addzreo && !list.contains(0d))
-			{
-				list.add(0, 0d);
-			}
 		}
-
 		return list;
 	}
 
