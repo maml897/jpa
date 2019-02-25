@@ -56,18 +56,25 @@ public class ComputeUtils
 		return result;
 	}
 
+	public static <T, U> Map<Double, U> group(List<Double> segments, List<T> objects, Function<T, Double> scoreExtractor, Collector<T, ?, U> collector)
+	{
+		Map<Double, U> map = LambdaUtils.groupby(objects, x -> Tool.key(segments, scoreExtractor.apply(x), true, true), collector);
+		return map;
+	}
+
 	/**
 	 * 获取每个分数段有多少人
 	 * @param segments
 	 *            从低到高排序
 	 * @param objects
-	 * @param scoreExtractor
+	 * @param objects
+	 *            的分数 ，scoreExtractor resultMapper 结果收集器
 	 * @return
 	 */
-	public static <T> Map<Double, List<T>> computeSegments(List<Double> segments, List<T> objects, Function<T, Double> scoreExtractor)
+	public static <T, U> Map<Double, List<U>> computeSegments(List<Double> segments, List<T> objects, Function<T, Double> scoreExtractor, Function<T, U> resultMapper)
 	{
-		Map<Double, List<T>> map = LambdaUtils.groupby(objects, x -> Tool.key(segments, scoreExtractor.apply(x), true, true));
-		Map<Double, List<T>> result = new LinkedHashMap<>();
+		Map<Double, List<U>> map = LambdaUtils.groupby(objects, x -> Tool.key(segments, scoreExtractor.apply(x), true, true), Collectors.mapping(resultMapper, Collectors.toList()));
+		Map<Double, List<U>> result = new LinkedHashMap<>();
 		segments.forEach(x -> {
 			if (map.containsKey(x))
 			{
@@ -92,7 +99,7 @@ public class ComputeUtils
 	 * @param withSums
 	 * @return
 	 */
-	public static <T, U> List<Map<String, Object>> computeSegments(double top, double bottom, int step, List<T> objects, Function<T, Double> scoreExtractor, Collector<T, ?, ?> c, boolean... withSums)
+	public static <T, U> List<Map<String, Object>> computeSegments(double top, double bottom, int step, List<T> objects, Function<T, Double> scoreExtractor, Collector<T, ?, U> collector, boolean... withSums)
 	{
 		List<Double> temp = getSegments(top, bottom, step);
 		List<Double> segments = new ArrayList<>(temp);
@@ -100,7 +107,7 @@ public class ComputeUtils
 		{
 			segments.add(0d);
 		}
-		Map<Double, ?> map = LambdaUtils.groupby(objects, x -> Tool.key(segments, scoreExtractor.apply(x), false, false), c);
+		Map<Double, U> map = LambdaUtils.groupby(objects, x -> Tool.key(segments, scoreExtractor.apply(x), false, false), collector);
 		List<Map<String, Object>> list = new ArrayList<>();
 		for (int i = 0; i < segments.size(); i++)
 		{
@@ -286,7 +293,7 @@ public class ComputeUtils
 	/**
 	 * 计算科目和小题的难度指数
 	 * @param segments
-	 *            分数段->人数IDs （总分或者科目的）
+	 *            分数段->人数IDs （总分或者科目的），这个map的规则是，小题0分开始，5分一段，即使没有该段没有人，也要是空列表；科目0分 10分，之后20分递增，某段没有也要存在空列表
 	 * @param scoreUsers
 	 *            用户ID-分数（科目或者小题）
 	 * @param fullScore
