@@ -2,6 +2,7 @@ package uitls;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -13,6 +14,8 @@ import java.util.function.ToDoubleFunction;
 import java.util.function.ToIntFunction;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
+
+import com.github.xsonorg.serializer.ArraySerializer;
 
 public class ComputeUtils
 {
@@ -99,7 +102,8 @@ public class ComputeUtils
 	 * @param withSums
 	 * @return
 	 */
-	public static <T, U> List<Map<String, Object>> computeSegments(double top, double bottom, int step, List<T> objects, Function<T, Double> scoreExtractor, Collector<T, ?, U> collector, boolean... withSums)
+	public static <T, U> List<Map<String, Object>> computeSegments(double top, double bottom, int step, List<T> objects, Function<T, Double> scoreExtractor, Collector<T, ?, U> collector,
+			boolean... withSums)
 	{
 		List<Double> temp = getSegments(top, bottom, step);
 		List<Double> segments = new ArrayList<>(temp);
@@ -334,5 +338,54 @@ public class ComputeUtils
 			result.add(map);
 		}
 		return result;
+	}
+
+	/**
+	 * 计算排名
+	 * @return
+	 */
+	public static <T, U> Map<Double, Long> order(List<T> list, Function<T, Double> valueFun, boolean... ordereds)
+	{
+
+		boolean ordered = true;
+		if (ordereds != null && ordereds.length > 0)
+		{
+			ordered = ordereds[0];
+		}
+
+		List<Double> values = LambdaUtils.list2list(list, valueFun);
+		if (!ordered)
+		{
+			values.sort((x, y) -> x < y ? 1 : -1);
+		}
+
+		Map<Double, Long> map = LambdaUtils.groupby(values, x -> x, Collectors.counting());
+		long order = 1;
+		Map<Double, Long> retult = new LinkedHashMap<>();
+		for (double value : map.keySet())
+		{
+			retult.put(value, order);
+			order = order + map.get(value);
+		}
+		return retult;
+	}
+
+	public static void main(String[] args)
+	{
+		List<Double> list = new ArrayList<>();
+		list.add(1d);
+		list.add(3d);
+		list.add(2d);
+		list.add(8d);
+
+		list.add(5d);
+		list.add(5d);
+		list.add(5d);
+		list.add(5d);
+		list.add(5d);
+		list.add(5d);
+		Map<Double, Long> map = order(list, x -> x);
+
+		System.out.println(map);
 	}
 }
