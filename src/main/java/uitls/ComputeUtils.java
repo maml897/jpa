@@ -344,7 +344,7 @@ public class ComputeUtils
 	 * 计算排名
 	 * @return
 	 */
-	public static <T, U> Map<Double, Long> order(List<T> list, Function<T, Double> valueFun, boolean... ordereds)
+	public static <T, U> Map<Number, Long> order(List<T> list, Function<T, Number> valueFun, boolean... ordereds)
 	{
 
 		boolean ordered = true;
@@ -353,16 +353,16 @@ public class ComputeUtils
 			ordered = ordereds[0];
 		}
 
-		List<Double> values = LambdaUtils.list2list(list, valueFun);
+		List<Number> values = LambdaUtils.list2list(list, valueFun);
 		if (!ordered)
 		{
-			values.sort((x, y) -> x < y ? 1 : -1);
+			values.sort((x, y) -> x.doubleValue() < y.doubleValue() ? 1 : -1);
 		}
 
-		Map<Double, Long> map = LambdaUtils.groupby(values, x -> x, Collectors.counting());
+		Map<Number, Long> map = LambdaUtils.groupby(values, x -> x, Collectors.counting());
 		long order = 1;
-		Map<Double, Long> retult = new LinkedHashMap<>();
-		for (double value : map.keySet())
+		Map<Number, Long> retult = new LinkedHashMap<>();
+		for (Number value : map.keySet())
 		{
 			retult.put(value, order);
 			order = order + map.get(value);
@@ -384,8 +384,8 @@ public class ComputeUtils
 		list.add(5d);
 		list.add(5d);
 		list.add(5d);
-		Map<Double, Long> map = order(list, x -> x);
-
+		Map<Number, Long> map = order(list, x -> x,false);
 		System.out.println(map);
+		System.out.println(map.keySet().iterator().next().getClass());
 	}
 }
