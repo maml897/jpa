@@ -92,4 +92,11 @@ public class JpaUtils
 	static{
 		dataSources_yj.put("hibernate.connection.url", "jdbc:mysql://172.16.0.129:3306/pingjuan?createDatabaseIfNotExist=true&amp;useUnicode=true&amp;characterEncoding=utf8");
 	}
+	
+	public static Map<String,String> dataSources_tx =new HashMap<>();
+	
+	static{
+		dataSources_tx.put("hibernate.connection.url", "jdbc:mysql://cdb-i1mqznj6.bj.tencentcdb.com:10012/cj?createDatabaseIfNotExist=true&amp;useUnicode=true&amp;characterEncoding=utf8");
+		dataSources_tx.put("hibernate.connection.password", "maml%897");
+	}
 }

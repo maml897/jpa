@@ -2,20 +2,20 @@ package uitls;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Random;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.ToDoubleFunction;
 import java.util.function.ToIntFunction;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
-
-import com.github.xsonorg.serializer.ArraySerializer;
 
 public class ComputeUtils
 {
@@ -342,27 +342,33 @@ public class ComputeUtils
 
 	/**
 	 * 计算排名
-	 * @return
+	 * @return 值（定义）-排名
 	 */
-	public static <T, U> Map<Number, Long> order(List<T> list, Function<T, Number> valueFun, boolean... ordereds)
+	public static <T, U> Map<U, Long> order(Collection<T> list, Function<T, Double> valueFun, Function<T, U> keyFun)
 	{
-
-		boolean ordered = true;
-		if (ordereds != null && ordereds.length > 0)
-		{
-			ordered = ordereds[0];
+		List<Double> values = LambdaUtils.list2list(list, valueFun);
+		Map<Double, Long> order = order(values);
+		Map<U, Long> result =new HashMap<>();
+		for(T t:list){
+			result.put(keyFun.apply(t), order.get(valueFun.apply(t)));
 		}
-
-		List<Number> values = LambdaUtils.list2list(list, valueFun);
-		if (!ordered)
-		{
-			values.sort((x, y) -> x.doubleValue() < y.doubleValue() ? 1 : -1);
-		}
-
-		Map<Number, Long> map = LambdaUtils.groupby(values, x -> x, Collectors.counting());
+		return result;
+	}
+	
+	/***
+	 * 计算排名
+	 * @param values
+	 * @return 分数 - 排名
+	 */
+	public static Map<Double, Long> order(Collection<Double> values)
+	{
+		Map<Double, Long> map= LambdaUtils.groupby(values, x -> x, Collectors.counting());
+		
+		//map 排序
+		map=map.entrySet().stream().sorted(Entry.<Double,Long>comparingByKey().reversed()).collect(Collectors.toMap(x->x.getKey(), x->x.getValue(), (key1, key2) -> key2, LinkedHashMap::new));
 		long order = 1;
-		Map<Number, Long> retult = new LinkedHashMap<>();
-		for (Number value : map.keySet())
+		Map<Double, Long> retult = new LinkedHashMap<>();
+		for (Double value : map.keySet())
 		{
 			retult.put(value, order);
 			order = order + map.get(value);
@@ -370,22 +376,62 @@ public class ComputeUtils
 		return retult;
 	}
 
+	/**
+	 * 来自云阅卷：计算排名
+	 * @param studentIDScores
+	 * @return
+	 */
+	public static Map<Long, Integer> computeOrder(Map<Long, Double> studentIDScores)
+	{
+		Map<Double, Integer> scores = new HashMap<>();
+		studentIDScores.forEach((key, value) -> {
+			Integer count = scores.get(value);
+			if (count == null)
+				count = 1;
+			else
+				count = count + 1;
+			scores.put(value, count);
+		});
+
+		Map<Long, Integer> studentIDOrder = new HashMap<>();
+
+		if (studentIDScores.size() == 0)
+			return studentIDOrder;
+
+		studentIDScores.forEach((key, value) -> {
+			int sum = 0;
+			try
+			{
+				sum = scores.entrySet().stream().filter(map -> map.getKey() > value).mapToInt(map -> map.getValue()).sum();
+			}
+			catch (Exception e)
+			{
+			}
+
+			studentIDOrder.put(key, sum + 1);
+		});
+
+		return studentIDOrder;
+	}
+
 	public static void main(String[] args)
 	{
 		List<Double> list = new ArrayList<>();
-		list.add(1d);
-		list.add(3d);
-		list.add(2d);
-		list.add(8d);
+		Map<Long, Float> map = new HashMap<>();
+		for (long i = 0; i < 50000; i++)
+		{
+			int j = new Random().nextInt(750);
+			map.put(i, (float) j);
+			list.add((double) j);
+		}
+		long s = System.currentTimeMillis();
+//		Map<Long, Integer> aa = computeOrder(map);
+//		System.out.println(aa);
+//		System.out.println(System.currentTimeMillis() - s);
+//		s = System.currentTimeMillis();
+		Map<Double, Long> a = order(list);
+		System.out.println(a);
+		System.out.println(System.currentTimeMillis() - s);
 
-		list.add(5d);
-		list.add(5d);
-		list.add(5d);
-		list.add(5d);
-		list.add(5d);
-		list.add(5d);
-		Map<Number, Long> map = order(list, x -> x,false);
-		System.out.println(map);
-		System.out.println(map.keySet().iterator().next().getClass());
 	}
 }
