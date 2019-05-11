@@ -24,16 +24,16 @@ public class LambdaUtils
 	{
 		return list.stream().collect(Collectors.toMap(key, value, (key1, key2) -> key2, LinkedHashMap::new));
 	}
-	
+
 	/**
 	 * map排序：
 	 * @param map
 	 * @param c：Entry.<Double,Long>comparingByKey().reversed()
 	 * @return
 	 */
-	public static <T, K> Map<T, K> mapOrder(Map<T, K> map,Comparator<Entry<T, K>> c)
+	public static <T, K> Map<T, K> mapOrder(Map<T, K> map, Comparator<Entry<T, K>> c)
 	{
-		Map<T, K> result=map.entrySet().stream().sorted(c).collect(Collectors.toMap(x->x.getKey(), x->x.getValue(), (key1, key2) -> key2, LinkedHashMap::new));
+		Map<T, K> result = map.entrySet().stream().sorted(c).collect(Collectors.toMap(x -> x.getKey(), x -> x.getValue(), (key1, key2) -> key2, LinkedHashMap::new));
 		return result;
 	}
 
@@ -49,27 +49,31 @@ public class LambdaUtils
 		return list.stream().filter(keyExtractor).collect(Collectors.toList());
 	}
 
-	// groupby
+	// 比较通用的分组，返回linkedhashmap，可以自定义key，value
+	public static <T, U, K> Map<U, K> groupby(Collection<T> list, Function<T, U> groupExtractor, Collector<T, ?, K> c)
+	{
+		return list.stream().collect(Collectors.groupingBy(groupExtractor, LinkedHashMap::new, c));
+	}
+
+	// groupby，value是list
 	public static <T, U> Map<U, List<T>> groupby(List<T> list, Function<T, U> keyExtractor)
 	{
 		return list.stream().collect(Collectors.groupingBy(keyExtractor, LinkedHashMap::new, Collectors.toList()));
 	}
 
-	public static <T, U, K> Map<U, K> groupby(Collection<T> list, Function<T, U> groupExtractor, Collector<T, ?, K> c)
-	{
-		return list.stream().collect(Collectors.groupingBy(groupExtractor, LinkedHashMap::new,c));
-	}
-	
+	//双层分组
 	public static <T, U, K> Map<U, Map<K, T>> groupby(List<T> list, Function<T, U> groupExtractor, Function<T, K> keyExtractor)
 	{
 		return list.stream().collect(Collectors.groupingBy(groupExtractor, LinkedHashMap::new, Collectors.toMap(keyExtractor, x -> x, (key1, key2) -> key2, LinkedHashMap::new)));
 	}
 
+	//双层分组
 	public static <T, U, K> Map<U, Map<K, List<T>>> groupby2(List<T> list, Function<T, U> groupExtractor, Function<T, K> keyExtractor)
 	{
 		return list.stream().collect(Collectors.groupingBy(groupExtractor, LinkedHashMap::new, Collectors.groupingBy(keyExtractor, LinkedHashMap::new, Collectors.toList())));
 	}
-	
+
+	//boolean值分组
 	public static <T> Map<Boolean, List<T>> groupbyboolean(List<T> list, Predicate<T> keyExtractor)
 	{
 		return list.stream().collect(Collectors.partitioningBy(keyExtractor));
