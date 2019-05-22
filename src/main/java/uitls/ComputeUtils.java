@@ -98,7 +98,7 @@ public class ComputeUtils
 	 * @param step
 	 * @param objects
 	 * @param scoreExtractor
-	 * @param c
+	 * @param collector ,如果是学生就是Collectors.counting()，如果是score表，就是Collectors.summingInt(Score::getCount)
 	 * @param withSums
 	 * @return
 	 */

@@ -108,8 +108,9 @@ public class Tool
 	 * @param findElem
 	 * @return
 	 */
-	public static double binaryKey(List<Double> list, double findElem)
+	public static double binaryKey(List<Double> list, double findElem, boolean getup)
 	{
+		// 需要先排序，从小到大
 		int size = list.size();
 
 		int low = 0;
@@ -119,22 +120,39 @@ public class Tool
 		{
 			mid = (low + high) / 2;
 			double midValue = list.get(mid);
-			if (findElem < midValue)
+			if (findElem < midValue)// 小于中间值，获取上一个，如果上一个不存在说明中间值是最后一个就返回最后一个
 			{
-				if (mid > 0 && findElem > list.get(mid - 1))
+				if (mid > 0)
 				{
-					return list.get(mid);
+					double prev = list.get(mid - 1);
+					if (findElem > prev)
+					{
+						return getup ? midValue : prev;
+					}
+					high = mid - 1;
 				}
-				high = mid - 1;
-			}
-			if (findElem > midValue)
-			{
-				if (mid + 1 < size && findElem < list.get(mid + 1))
+				else
 				{
-					return list.get(mid + 1);
+					return getup?midValue:-1;
 				}
 
-				low = mid + 1;
+			}
+
+			if (findElem > midValue)// 大于中间值，获取下一个，如果下一个不存在说明中间值是最后一个就返回最后一个
+			{
+				if (mid + 1 < size)
+				{
+					double next = list.get(mid + 1);
+					if (findElem < next)
+					{
+						return getup ? next : midValue;
+					}
+					low = mid + 1;
+				}
+				else
+				{
+					return getup?-1:midValue;
+				}
 			}
 			if (midValue == findElem)
 			{
@@ -191,11 +209,13 @@ public class Tool
 
 		long s = System.currentTimeMillis();
 		Map<Double, List<Double>> map = LambdaUtils.groupby(list1, x -> {
-			Double r = Tool.key(list, x, false);
+			Double r = Tool.binaryKey(list, x, false);
 			return r;
 		});
 		System.out.println(System.currentTimeMillis() - s);
 
+		System.out.println(list1.size());
+		System.out.println(map);
 		Map<Double, List<Double>> result = new LinkedHashMap<>();
 		for (double key : list)
 		{
