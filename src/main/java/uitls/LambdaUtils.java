@@ -56,7 +56,7 @@ public class LambdaUtils
 	}
 
 	// groupby，value是list
-	public static <T, U> Map<U, List<T>> groupby(List<T> list, Function<T, U> keyExtractor)
+	public static <T, U> Map<U, List<T>> groupby(Collection<T> list, Function<T, U> keyExtractor)
 	{
 		return list.stream().collect(Collectors.groupingBy(keyExtractor, LinkedHashMap::new, Collectors.toList()));
 	}

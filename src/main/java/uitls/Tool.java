@@ -6,12 +6,20 @@ import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collector;
 
 public class Tool
 {
 
+	public static Segment key(Collection<Segment> segments, double value)
+	{
+		LambdaUtils.filter(segments, x->x.test(value));
+		return null;
+	}
+	
 	/**
-	 * 返回values 中距离value 最近的值，可以上取，也可以下取 取高：低于最低分的都算作最低分；取低：高于最高分的都算作最高分
+	 * 返回values 中距离value 最近的值，可以上取，也可以下取， 取高：低于最低分的都算作最低分；取低：高于最高分的都算作最高分
 	 * @param value：
 	 * @param values：排好序的value，从小到大
 	 * @return
@@ -133,7 +141,7 @@ public class Tool
 				}
 				else
 				{
-					return getup?midValue:-1;
+					return getup ? midValue : -1;
 				}
 
 			}
@@ -151,7 +159,7 @@ public class Tool
 				}
 				else
 				{
-					return getup?-1:midValue;
+					return getup ? -1 : midValue;
 				}
 			}
 			if (midValue == findElem)
@@ -191,6 +199,74 @@ public class Tool
 		{
 			return f + "";
 		}
+	}
+
+	/**
+	 * 获取分段
+	 * @param from
+	 *            开始值
+	 * @param to
+	 *            结束值
+	 * @param step
+	 *            步长
+	 * @param addZero
+	 *            是否加0，默认不加
+	 * @return
+	 */
+	public static List<Double> getSegments(double from, double to, int step)
+	{
+
+		if (from == to)
+		{
+			return Arrays.asList(from);
+		}
+
+		List<Double> list = new ArrayList<>();
+		if (from > to)
+		{
+			while (from > to)
+			{
+				list.add(from);
+				from = from - step;
+			}
+			if (!list.contains(to))
+			{
+				list.add(to);
+			}
+		}
+		else
+		{
+			while (from < to)
+			{
+				list.add(from);
+				from = from + step;
+			}
+			if (!list.contains(to))
+			{
+				list.add(to);
+			}
+		}
+		return list;
+	}
+
+	/**
+	 * 按照分段分组
+	 * @param segments
+	 *            分数段：从低到高排序
+	 * @param objects
+	 *            操作对象
+	 * @param scoreExtractor
+	 *            从操作对象上获取要操作的分数
+	 * @param collector
+	 *            结果收集器
+	 * @param getup
+	 *            分段分组取值方式，例如15在 10,20 高取是20，低取是10
+	 * @return
+	 */
+	public static <T, U> Map<Double, U> groupBySegment(List<Double> segments, Collection<T> objects, Function<T, Double> scoreExtractor, Collector<T, ?, U> collector, boolean getup)
+	{
+		Map<Double, U> map = LambdaUtils.groupby(objects, x -> Tool.key(segments, scoreExtractor.apply(x), getup, true), collector);
+		return map;
 	}
 
 	public static void main(String[] args)
